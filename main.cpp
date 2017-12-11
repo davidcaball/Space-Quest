@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "menu.h"
+#include "screen.h"
+
 
 //g++ -c main.cpp
 //g++ main.o -o main-app -lsfml-graphics -lsfml-window -lsfml-system
@@ -14,17 +16,16 @@
 // R = 5
 // Sel = 6
 // Start = 7
+// X/Y = -100 || 100 || 0
 
 
 
 Menu createMenu(sf::Window &window, sf::Texture &bg);	
 
 int main()
-{
-
+{   
+    //Create Render window
     sf::RenderWindow window(sf::VideoMode(800, 600), "Space Quest");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Red);
 
     //Create Menu
     sf::Texture backgroundTexture;
@@ -32,23 +33,16 @@ int main()
         std::cerr << "Error Loading background image" << std::endl;
     }
     Menu menu = createMenu(window, backgroundTexture);
-    std::cout << sf::Joystick::getButtonCount(0);
+
+    //create a vector of screens to handle changing between them
+    std::vector<Screen*> screens;
+    int screen = 0;
+    screens.push_back(&menu);
+
     //Render graphics
-    while (window.isOpen())
+    while (screen >= 0)
     {
-    std::cout << sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear();
-        window.draw(shape);
-        menu.draw(window);
-        window.display();
+        screen = screens[screen]->Run(window);
     }
 
     return 0;
