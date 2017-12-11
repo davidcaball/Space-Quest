@@ -1,4 +1,5 @@
 #include "menu.h"
+#include <iostream>
 
 Menu::Menu(float width, float height){
 	if(!font.loadFromFile("arial.ttf")){
@@ -15,5 +16,12 @@ Menu::~Menu(){
 }
 
 void Menu::draw(sf::RenderWindow &window){
+	window.draw(background);
 	window.draw(play);
+}
+
+void Menu::setBackground(sf::Texture  &backgroundTexture){
+    sf::Sprite bg;
+    bg.setTexture(backgroundTexture);
+    background = bg;
 }

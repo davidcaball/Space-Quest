@@ -13,11 +13,13 @@ public:
 	void draw(sf::RenderWindow &window);
 	void MoveUp();
 	void MoveDown();
+	void setBackground(sf::Texture &backgroundTexture);
 
 private:
 
 	int selectedItem;
 	sf::Font font;
 	sf::Text play;
+	sf::Sprite background;
 
 };
