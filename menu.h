@@ -4,6 +4,7 @@
 
 #define MAX_NUMBER_ITEMS 3
 
+//menu class inherits the screen class and overrids the Run function
 class Menu : public Screen{
 
 public:
@@ -22,6 +23,7 @@ private:
 	sf::Font font;
 	sf::Text play;
 	sf::Text controls;
+	sf::Text title;
 	sf::Sprite background;
 
 };

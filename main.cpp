@@ -25,7 +25,7 @@ Menu createMenu(sf::Window &window, sf::Texture &bg);
 int main()
 {   
     //Create Render window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Space Quest");
+    sf::RenderWindow window(sf::VideoMode(1600, 1200), "Space Quest");
 
     //Create Menu
     sf::Texture backgroundTexture;
