@@ -1,8 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "menu.h"
 
-//g++ -c sfmltest.cpp
-//g++ sfml.o -o sfml-app -lsfml-graphics -lsfml-window -lsfml-system
+//g++ -c main.cpp
+//g++ main.o -o main-app -lsfml-graphics -lsfml-window -lsfml-system
 
 	
 int main()
@@ -10,7 +11,9 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(600, 600), "SFML works!");
     sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    shape.setFillColor(sf::Color::Red);
+
+    Menu menu(window.getSize().x, window.getSize().y);
 
 
     while (window.isOpen())
@@ -23,7 +26,8 @@ int main()
         }
 
         window.clear();
-        window.draw(shape);
+      //  window.draw(shape);
+        menu.draw(window);
         window.display();
     }
 
