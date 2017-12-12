@@ -1,8 +1,9 @@
 #include "menu.h"
 #include <iostream>
+#include<typeinfo> //TODO remove this
 
 Menu::Menu(float width, float height){
-	if(!font.loadFromFile("sofachromerg.ttf")){
+	if(!font.loadFromFile("resources/sofachromerg.ttf")){
 		//error
 	}
 
@@ -36,13 +37,46 @@ Menu::Menu(float width, float height){
 	title.setOrigin(titleRect.left + titleRect.width/2.0f,
 		titleRect.top + titleRect.height / 2.0f);
 	title.setPosition(sf::Vector2f(width / 2.0, height / 2.0 - 400));
+
+	//create vector of menu items
+	selectedItem = 0;
+	items.push_back(&play);
+	items.push_back(&controls);
+
+	//load music file
+	music = new sf::Music();
+	 if(!music->openFromFile("resources/VeridisQuoTitle.ogg")){
+		std::cerr << "Error opening music file" << std::endl;
+	 }else
+	 music->loop(true);
+	 music->play();
 }
 
 Menu::~Menu(){
-
 }
 
-int Menu::Run(sf::RenderWindow &window){
+void Menu::scanInput(sf::RenderWindow &window, float delta){
+	sf::Event e;
+	timer += delta;
+	while(window.pollEvent(e)){
+	 //timer to limit amount of inputs per second
+			items[0]->setColor(sf::Color::White);
+			items[1]->setColor(sf::Color::White);
+			items[selectedItem]->setColor(sf::Color::Red);
+			if(e.type == sf::Event::JoystickMoved){
+				if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 0)
+					selectedItem++;
+				if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 0)
+					selectedItem--;
+				if(selectedItem < 0) selectedItem *= -1;
+				selectedItem = selectedItem % 2;
+				std::cout <<  selectedItem << std::endl;
+			}
+	}
+}
+
+int Menu::Run(sf::RenderWindow &window, float delta){
+	scanInput(window, delta);
 	window.draw(background);
 	window.draw(play);
 	window.draw(controls);

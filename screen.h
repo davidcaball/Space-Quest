@@ -11,5 +11,5 @@
 
 class Screen{
 public:
-	virtual int Run(sf::RenderWindow &App) = 0;
+	virtual int Run(sf::RenderWindow &App, float delta) = 0;
 };

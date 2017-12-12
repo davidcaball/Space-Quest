@@ -2,6 +2,7 @@
 #include <iostream>
 #include "menu.h"
 #include "screen.h"
+#include <SFML/Audio.hpp>
 
 
 //g++ -c main.cpp
@@ -24,12 +25,18 @@ Menu createMenu(sf::Window &window, sf::Texture &bg);
 
 int main()
 {   
+    sf::Event e;
+
+    //create system clock for measuring time between rendered frames
+    sf::Clock clock;
+    sf::Time elapsed;
+
     //Create Render window
     sf::RenderWindow window(sf::VideoMode(1600, 1200), "Space Quest");
 
     //Create Menu
     sf::Texture backgroundTexture;
-    if(!backgroundTexture.loadFromFile("background.jpeg")){
+    if(!backgroundTexture.loadFromFile("resources/background.jpeg")){
         std::cerr << "Error Loading background image" << std::endl;
     }
     Menu menu = createMenu(window, backgroundTexture);
@@ -41,8 +48,10 @@ int main()
 
     //Render graphics
     while (screen >= 0)
-    {
-        screen = screens[screen]->Run(window);
+    {   
+        elapsed = clock.getElapsedTime();
+        clock.restart();
+        screen = screens[screen]->Run(window, elapsed.asMilliseconds());
     }
 
     return 0;
