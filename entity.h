@@ -1,4 +1,5 @@
 #pragma once
+#include "platform.h"
 #include <SFML/Graphics.hpp>
 
 class Entity{
@@ -28,7 +29,7 @@ public:
 
 	//checks collision of all platforms in a vector, returns index of platform
 	//that is being collided with
-	int checkPlatformVectorCollision(std::vector<sf::Sprite*> platforms);
+	int checkPlatformVectorCollision(std::vector<Platform*> platforms);
 	sf::Sprite getSprite();
 
 	sf::Sprite sprite;

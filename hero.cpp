@@ -7,6 +7,7 @@ Hero::Hero(sf::Texture &tex){
 	sf::Sprite sprite;
 	jumps = Constants::NUM_JUMPS;
 	airDodgeTimer = Constants::AIR_DODGE_TIME;
+	canAirDodge = true;
 }
 
 void Hero::setVelocity(sf::Vector2f velocityArg){
@@ -22,21 +23,20 @@ void Hero::setVelocity(sf::Vector2f velocityArg){
 
 void Hero::update(float delta){
 	//setVelocity(sf::Vector2f(velocity.x, velocity.y));
-
+	setOrientation();
 	sprite.setPosition(sprite.getPosition().x + velocity.x * delta, sprite.getPosition().y + velocity.y * delta);
 
 	//check if player is airdodging
 	if(airDodging){
 		airDodgeTimer-= delta;
-		if(airDodgeTimer < 200){
+		if(airDodgeTimer < 170){
 			velocity.x = 0;
 			velocity.y = 0;
 		}
 		if(airDodgeTimer <= 0){
 			airDodging = false;
 			invincible = false;
-			airDodgeTimer = Constants::AIR_DODGE_TIME;
-			sprite.setColor(sf::Color::White);
+			sprite.setTextureRect(sf::IntRect(1, 62, 18, 23));
 		}
 		return;
 	}
@@ -59,6 +59,7 @@ void Hero::update(float delta){
 			velocity.y = 0;
 			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));
 			restoreJumps();
+			restoreAirDodge();
 	}
 
 }
@@ -80,24 +81,26 @@ bool Hero::checkPlatformCollision(sf::Sprite object){
 	}
 }
 
-int Hero::checkPlatformVectorCollision(std::vector<sf::Sprite*> platforms){
+int Hero::checkPlatformVectorCollision(std::vector<Platform*> platforms){
 	//loop through vector and call helper method to check collision
 	for(int i = 0; i < platforms.size(); i++){
-		if(checkPlatformCollision(*platforms[i])) return i;
+		if(checkPlatformCollision(platforms[i]->sprite)) return i;
 	}
 	return -1;
 }
 
 void Hero::restoreJumps(){
+	sprite.setTextureRect(sf::IntRect(1, 62, 18, 23));
 	jumps = Constants::NUM_JUMPS;
 }
 
 //air dodging makes you invincible and moves you quickly in a direction
 void Hero::airDodge(){
-	if(airDodgeTimer == Constants::AIR_DODGE_TIME){
+	if(canAirDodge){
 		invincible = true;
 		airDodging = true;
-			if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == 100){
+		canAirDodge = false;
+		if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == 100){
 			velocity.x = Constants::AIR_DODGE_SPEED;
 		}
 		if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == -100){
@@ -109,10 +112,24 @@ void Hero::airDodge(){
 		if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) == -100){
 			velocity.y = -Constants::AIR_DODGE_SPEED;
 		}
-		sprite.setColor(sf::Color::Blue);
+		sprite.setTextureRect(sf::IntRect(578, 60, 17, 24));
 	}
 }
 
+void Hero::setJumpSprite(){
+	sprite.setTextureRect(sf::IntRect(353, 62, 18, 23));
+}
+
+void Hero::setOrientation(){
+	float scale = Constants::SPRITE_SCALE;
+	if(velocity.x > 0) sprite.setScale(scale, scale);
+	else if(velocity.x < 0) sprite.setScale(-scale, scale);
+}
+
+void Hero::restoreAirDodge(){
+	airDodgeTimer = Constants::AIR_DODGE_TIME;
+	canAirDodge = true;
+}
 
 Hero::~Hero(){}
 

@@ -86,10 +86,9 @@ bool Entity::checkPlatformCollision(sf::Sprite object){
 
 }
 
-int Entity::checkPlatformVectorCollision(std::vector<sf::Sprite*> platforms){
-	//loop through vector and call helper method to check collision
+int Entity::checkPlatformVectorCollision(std::vector<Platform*> platforms){
 	for(int i = 0; i < platforms.size(); i++){
-		if(checkPlatformCollision(*platforms[i])) return i;
+		if(checkPlatformCollision(platforms[i]->sprite)) return i;
 	}
 	return -1;
 }
