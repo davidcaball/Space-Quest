@@ -27,6 +27,18 @@ Menu::Menu(float width, float height){
 	controls.setOrigin(controlsRect.left + controlsRect.width/2.0f,
 		controlsRect.top + controlsRect.height / 2.0f);
 	controls.setPosition(sf::Vector2f(width / 2.0, height / 2.0 + 100));
+
+	//set settings for exit button
+	//Set settings for play button
+	exit.setColor(sf::Color::White);
+	exit.setScale(sf::Vector2f(1.5f, 1.5f));
+	exit.setString("Exit");
+	exit.setFont(font);
+	sf::FloatRect  exitRect = exit.getLocalBounds();
+	exit.setOrigin(exitRect.left + exitRect.width/2.0f,
+		exitRect.top + exitRect.height / 2.0f);
+	exit.setPosition(sf::Vector2f(width / 2.0, height / 2.0 + 200));
+
 	
 	//set settings for title
 	title.setFont(font);
@@ -42,45 +54,66 @@ Menu::Menu(float width, float height){
 	selectedItem = 0;
 	items.push_back(&play);
 	items.push_back(&controls);
+	items.push_back(&exit);
 
 	//load music file
 	music = new sf::Music();
 	 if(!music->openFromFile("resources/VeridisQuoTitle.ogg")){
 		std::cerr << "Error opening music file" << std::endl;
 	 }else
-	 music->loop(true);
+	 music->setLoop(true);
 	 music->play();
+
+	 //load sounds
+	 if(!buffer.loadFromFile("resources/buttonboop.ogg"))
+	 	std::cerr << "Error opening sound file buttonboop" << std::endl;
+	 sound.setBuffer(buffer);
 }
 
 Menu::~Menu(){
 }
 
-void Menu::scanInput(sf::RenderWindow &window, float delta){
-	sf::Event e;
-	timer += delta;
-	while(window.pollEvent(e)){
-	 //timer to limit amount of inputs per second
-			items[0]->setColor(sf::Color::White);
-			items[1]->setColor(sf::Color::White);
-			items[selectedItem]->setColor(sf::Color::Red);
-			if(e.type == sf::Event::JoystickMoved){
-				if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 0)
-					selectedItem++;
-				if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 0)
-					selectedItem--;
-				if(selectedItem < 0) selectedItem *= -1;
-				selectedItem = selectedItem % 2;
-				std::cout <<  selectedItem << std::endl;
-			}
-	}
-}
+
 
 int Menu::Run(sf::RenderWindow &window, float delta){
-	scanInput(window, delta);
+	sf::Event e;
+
+	while(window.pollEvent(e)){ //step through all events
+			items[0]->setColor(sf::Color::White);
+			items[1]->setColor(sf::Color::White);
+			items[2]->setColor(sf::Color::White);
+			items[selectedItem]->setColor(sf::Color::Red);
+			if(e.type == sf::Event::JoystickMoved){
+				if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 0){
+					selectedItem++;
+					sound.play();
+				}
+				if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < 0){
+					selectedItem--;
+					sound.play();
+				}
+				if(selectedItem < 0) selectedItem = 2;
+				selectedItem = selectedItem % 3;
+				std::cout << selectedItem << std::endl;
+			}
+			if(e.type == sf::Event::JoystickButtonPressed){
+				if(e.joystickButton.button == 0){	
+					if(selectedItem == 0){
+						music->stop();
+						return -1;
+					}
+					if(selectedItem == 1) return -2;
+					if(selectedItem == 2) return -3; 
+				}
+			}
+	}
+
+	//render objects and draw window
 	window.draw(background);
 	window.draw(play);
 	window.draw(controls);
 	window.draw(title);
+	window.draw(exit);
 	window.display();
 	return 0;
 }

@@ -26,11 +26,14 @@ private:
 	sf::Text play;
 	sf::Text controls;
 	sf::Text title;
+	sf::Text exit;
 	std::vector<sf::Text*> items;
 	sf::Sprite background;
 	//music is declared as a pointer as a workaround to not being able to use classes
 	//that inherit sf::nonCopyable
 	sf::Music * music;
+	sf::SoundBuffer buffer;
+	sf::Sound sound;
 	float timer;
 
 };
