@@ -28,6 +28,8 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 		playerRect.top + playerRect.height);
 	player.sprite.setPosition(width / 2, ground.getPosition().y);
 	player.setMoveSpeed(Constants::PLAYER_MOVE_SPEED);
+	player.setVelocity(sf::Vector2f(0,0));
+	player.setAcceleration(Constants::PLAYER_ACCELERATION);
 
 }
 
@@ -57,12 +59,15 @@ int Game::Run(sf::RenderWindow &window, float delta){
 			}
 	}
 
-	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 0){
-		player.move(player.getMoveSpeed() * delta, 0);
+	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == 100){
+		player.setVelocity(sf::Vector2f(player.getVelocity().x + player.getAcceleration() * delta, player.getVelocity().y));
 	}
-	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) < 0){
-		player.move(player.getMoveSpeed() * delta * -1, 0);
+	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == -100){
+		player.setVelocity(sf::Vector2f(player.getVelocity().x + player.getAcceleration() * delta * -1, player.getVelocity().y));
 	}
+
+
+	player.update(delta);
 
 	//render objects and draw window
 	window.draw(background);

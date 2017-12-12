@@ -11,6 +11,7 @@ public:
 
 	Entity();
 	~Entity();
+	void update(float delta);
 	void move(float x, float y);
 	void jump();
 	void loseHP();
@@ -18,14 +19,18 @@ public:
 	void setTexture(sf::Texture &tex);
 	void setMoveSpeed(float speed);
 	float getMoveSpeed();
-	sf::Sprite getSprite();
 	void setVelocity(sf::Vector2f velocityArg);
+	sf::Vector2f getVelocity();
+	void setAcceleration(float acc);
+	float getAcceleration();
+	sf::Sprite getSprite();
 
 	sf::Sprite sprite;
 
-private:
+protected:
 
 	float moveSpeed;
+	float acceleration;
 	int hitPoints;
 	sf::Texture * masterTexture;
 	sf::Vector2f velocity;
