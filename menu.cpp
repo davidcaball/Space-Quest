@@ -1,6 +1,5 @@
 #include "menu.h"
 #include <iostream>
-#include<typeinfo> //TODO remove this
 
 Menu::Menu(float width, float height){
 	if(!font.loadFromFile("resources/sofachromerg.ttf")){
@@ -99,8 +98,8 @@ int Menu::Run(sf::RenderWindow &window, float delta){
 			if(e.type == sf::Event::JoystickButtonPressed){
 				if(e.joystickButton.button == 0){	
 					if(selectedItem == 0){
-						music->stop();
-						return -1;
+						//music->stop();
+						return 1;
 					}
 					if(selectedItem == 1) return -2;
 					if(selectedItem == 2) return -3; 

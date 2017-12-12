@@ -13,5 +13,6 @@ public:
 private:
 	
 	int hitPoints;
+	sf::Sprite sprite;
 	
 };

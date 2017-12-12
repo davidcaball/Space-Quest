@@ -2,6 +2,7 @@
 #include <iostream>
 #include "menu.h"
 #include "screen.h"
+#include "game.h"
 #include <SFML/Audio.hpp>
 
 
@@ -22,6 +23,7 @@
 
 
 Menu createMenu(sf::Window &window, sf::Texture &bg);	
+Game createGame(sf::Window &window, sf::Texture &bg);   
 
 int main()
 {   
@@ -35,16 +37,26 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1600, 1200), "Space Quest");
 
     //Create Menu
-    sf::Texture backgroundTexture;
-    if(!backgroundTexture.loadFromFile("resources/background.jpeg")){
+    //TODO create single texture file
+    sf::Texture menuBackgroundTexture;
+    if(!menuBackgroundTexture.loadFromFile("resources/background.jpeg")){
         std::cerr << "Error Loading background image" << std::endl;
     }
-    Menu menu = createMenu(window, backgroundTexture);
+
+    Menu menu = createMenu(window, menuBackgroundTexture);
+
+    sf::Texture gameBackgroundTexture;
+    if(!gameBackgroundTexture.loadFromFile("resources/sky.png")){
+        std::cerr << "Error loading game background image" << std::endl;
+    }
+
+    Game game = createGame(window, gameBackgroundTexture);
 
     //create a vector of screens to handle changing between them
     std::vector<Screen*> screens;
     int screen = 0;
     screens.push_back(&menu);
+    screens.push_back(&game);
 
     //Render graphics
     while (screen >= 0)
@@ -63,4 +75,11 @@ Menu createMenu(sf::Window &window, sf::Texture &bg){
     Menu menu(window.getSize().x, window.getSize().y);
     menu.setBackground(bg);
     return menu;
+}
+
+Game createGame(sf::Window &window, sf::Texture &bg){
+
+    Game game(window.getSize().x, window.getSize().y);
+    game.setBackground(bg);
+    return game;
 }
