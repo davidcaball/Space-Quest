@@ -4,6 +4,10 @@
 #include <time.h>
 
 Game::Game(float width, float height, sf::Texture &masterTex){
+
+	//initialize view
+	view = sf::View(sf::FloatRect(0,0,width, height));
+
 	//set games master texture
 	masterTexture = &masterTex;
 	windowHeight = height;
@@ -93,13 +97,13 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
 	}
 	
-
-
+	//update view to follow player
+	updateView();
 
 	player.update(delta);
 
 	//render objects and draw window
-
+	window.setView(view);
 	window.draw(background);
 	window.draw(ground);
 	window.draw(platform);
@@ -136,4 +140,9 @@ sf::Sprite * Game::createPlatform(int num){
 
 }
 
+void Game::updateView(){
+	float yPos = player.sprite.getPosition().y;
+	if(yPos > windowHeight / 2) yPos = windowHeight / 2;
+	view.setCenter(sf::Vector2f(windowWidth / 2, yPos));
+}
 

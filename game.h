@@ -16,11 +16,13 @@ public:
 	int Run(sf::RenderWindow &window, float delta);
 	void setBackground();
 	void createPlatformVector();
+	void updateView();
 	sf::Sprite * createPlatform(int num);
 
 private:
 	float windowHeight;
 	float windowWidth;
+	sf::View view;
 	int selectedItem;
 	sf::Font font;
 	std::vector<sf::Text*> items;

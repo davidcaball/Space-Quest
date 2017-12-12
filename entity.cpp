@@ -46,9 +46,13 @@ void Entity::update(float delta){
 	if(getVelocity().x != 0){
 		setVelocity(sf::Vector2f(getVelocity().x - Constants::FRICTION * delta * ((getVelocity().x > 0) ? 1 : -1), 
 							   	getVelocity().y));
+		//comparison is used to test whether there was a switch in velocity from pos to neg
+		//if there is just set velocity to 0 to revent jittering
 		if(temp * getVelocity().x < 0) setVelocity(sf::Vector2f(0, getVelocity().y));
 	}
 
+	//checks if sprite is below the ground level, corrects if it is.
+	//if it is above ground gravity acts on it
 	if(sprite.getPosition().y < Constants::WINDOW_HEIGHT - 40){
 		velocity.y += Constants::GRAVITY * delta;
 	}else{
@@ -71,6 +75,7 @@ void Entity::jump(){
 }
 
 bool Entity::checkPlatformCollision(sf::Sprite object){
+	//checking bounds of both object to see if they intersect
 	if(object.getPosition().y < sprite.getPosition().y 
 		&& object.getPosition().y + object.getLocalBounds().height > sprite.getPosition().y
 		&& object.getPosition().x < sprite.getPosition().x
@@ -80,6 +85,7 @@ bool Entity::checkPlatformCollision(sf::Sprite object){
 }
 
 int Entity::checkPlatformVectorCollision(std::vector<sf::Sprite*> platforms){
+	//loop through vector and call helper method to check collision
 	for(int i = 0; i < platforms.size(); i++){
 		if(checkPlatformCollision(*platforms[i])) return i;
 	}
