@@ -120,5 +120,6 @@ int Menu::Run(sf::RenderWindow &window, float delta){
 void Menu::setBackground(sf::Texture  &backgroundTexture){
     sf::Sprite bg;
     bg.setTexture(backgroundTexture);
+    bg.setTextureRect(sf::IntRect(0, 125, 1600, 1200));
     background = bg;
 }

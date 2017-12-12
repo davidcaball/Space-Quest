@@ -12,6 +12,7 @@ Game::~Game(){
 void Game::setBackground(sf::Texture &backgroundTexture){
 	sf::Sprite bg;
     bg.setTexture(backgroundTexture);
+    bg.setTextureRect(sf::IntRect(0, 1335, 1600, 1200));
     background = bg;
 }
 

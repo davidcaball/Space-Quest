@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "screen.h"
-#include "hero.h"
+
 
 //menu class inherits the screen class and overrids the Run function
 class Game : public Screen{
@@ -27,5 +27,5 @@ private:
 	sf::SoundBuffer buffer;
 	sf::Sound sound;
 	std::vector<sf::Sprite> platforms;
-	Hero player;
+	//Hero player;
 };

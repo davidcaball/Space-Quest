@@ -38,19 +38,14 @@ int main()
 
     //Create Menu
     //TODO create single texture file
-    sf::Texture menuBackgroundTexture;
-    if(!menuBackgroundTexture.loadFromFile("resources/background.jpeg")){
-        std::cerr << "Error Loading background image" << std::endl;
+
+    sf::Texture masterTexture;
+    if(!masterTexture.loadFromFile("resources/spritesheet.png")){
+        std::cerr << "Could not load masterTexture file" << std:: endl;
     }
 
-    Menu menu = createMenu(window, menuBackgroundTexture);
-
-    sf::Texture gameBackgroundTexture;
-    if(!gameBackgroundTexture.loadFromFile("resources/sky.png")){
-        std::cerr << "Error loading game background image" << std::endl;
-    }
-
-    Game game = createGame(window, gameBackgroundTexture);
+    Menu menu = createMenu(window, masterTexture);
+    Game game = createGame(window, masterTexture);
 
     //create a vector of screens to handle changing between them
     std::vector<Screen*> screens;

@@ -32,5 +32,6 @@ private:
 	sf::Music * music;
 	sf::SoundBuffer buffer;
 	sf::Sound sound;
+	sf::Sprite ground;
 
 };
