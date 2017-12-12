@@ -61,6 +61,7 @@ Menu::Menu(float width, float height){
 		std::cerr << "Error opening music file" << std::endl;
 	 }else
 	 music->setLoop(true);
+	 music->setVolume(50);
 	 music->play();
 
 	 //load sounds

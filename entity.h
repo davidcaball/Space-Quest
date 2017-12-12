@@ -23,6 +23,7 @@ public:
 	sf::Vector2f getVelocity();
 	void setAcceleration(float acc);
 	float getAcceleration();
+	bool checkPlatformCollision(sf::Sprite object);
 	sf::Sprite getSprite();
 
 	sf::Sprite sprite;

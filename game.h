@@ -15,6 +15,7 @@ public:
 
 	int Run(sf::RenderWindow &window, float delta);
 	void setBackground();
+	void createPlatformArray();
 
 private:
 
@@ -31,4 +32,5 @@ private:
 	Hero player;
 	sf::Texture * masterTexture;
 	sf::Sprite ground;
+	sf::Sprite platform;
 };

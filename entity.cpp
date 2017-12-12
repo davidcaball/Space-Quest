@@ -56,6 +56,7 @@ void Entity::update(float delta){
 			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));
 		}
 	}
+
 }
 
 float Entity::getMoveSpeed(){
@@ -68,6 +69,15 @@ sf::Sprite Entity::getSprite(){
 
 void Entity::jump(){
 	velocity.y = Constants::JUMP_SPEED * -1;
+}
+
+bool Entity::checkPlatformCollision(sf::Sprite object){
+	if(object.getPosition().y < sprite.getPosition().y 
+		&& object.getPosition().y + object.getLocalBounds().height > sprite.getPosition().y
+		&& object.getPosition().x < sprite.getPosition().x
+		&& object.getPosition().x + object.getLocalBounds().width > sprite.getPosition().x)
+		return true;
+
 }
 
 Entity::~Entity(){}

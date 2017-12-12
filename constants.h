@@ -17,7 +17,7 @@ namespace Constants
 
 
   const float FRICTION = 0.02f;
-  const float GRAVITY = 0.03f;
+  const float GRAVITY = 0.035f;
 
 }
 #endif

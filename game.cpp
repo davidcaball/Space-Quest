@@ -17,6 +17,14 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	ground.setScale(sf::Vector2f(1.0f, 2.0f));
 	ground.setPosition(0, height - 40);
 
+	//initialize platform
+	platform.setTexture(*masterTexture);
+	platform.setTextureRect(sf::IntRect(1, 2554, 200, 20));
+	sf::FloatRect platformRect = platform.getLocalBounds();
+	platform.setOrigin(platformRect.left, platformRect.top);
+	platform.setScale(sf::Vector2f(1.0f, 2.0f));
+	platform.setPosition(width / 2, height - 300);
+
 	//initialize players sprite 
 	player = Hero(*masterTexture);
 	player.sprite.setTexture(*masterTexture);
@@ -68,15 +76,25 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		player.setVelocity(sf::Vector2f(player.getVelocity().x + player.getAcceleration() * delta * -1, player.getVelocity().y));
 	}
 
+	//logic to allow player to jump up through platform, but not down
+	if(player.checkPlatformCollision(platform) && player.getVelocity().y > 0){
+		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
+	}
+	
+
+
 
 	player.update(delta);
 
 	//render objects and draw window
 	window.draw(background);
-	window.draw(player.sprite);
 	window.draw(ground);
+	window.draw(platform);
+	window.draw(player.sprite);
 	window.display();
 	return 1;
 }
+
+void Game::createPlatformArray(){}
 
 
