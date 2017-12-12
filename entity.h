@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-class Character{
+class Entity{
 public:
 
 	Chatacter(sf::Texture tex);

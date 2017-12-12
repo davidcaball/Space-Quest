@@ -14,10 +14,8 @@ public:
 	~Menu();
 
 	int Run(sf::RenderWindow &window, float delta);
-	void MoveUp();
-	void MoveDown();
+
 	void setBackground(sf::Texture &backgroundTexture);
-	void scanInput(sf::RenderWindow &window, float delta);
 
 private:
 
@@ -34,6 +32,5 @@ private:
 	sf::Music * music;
 	sf::SoundBuffer buffer;
 	sf::Sound sound;
-	float timer;
 
 };
