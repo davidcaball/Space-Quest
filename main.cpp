@@ -75,6 +75,5 @@ Menu createMenu(sf::Window &window, sf::Texture &bg){
 Game createGame(sf::Window &window, sf::Texture &bg){
 
     Game game(window.getSize().x, window.getSize().y, bg);
-    game.setBackground();
     return game;
 }

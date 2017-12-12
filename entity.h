@@ -16,11 +16,13 @@ public:
 	void loseHP();
 	void die();
 	void setTexture(sf::Texture &tex);
+	sf::Sprite getSprite();
+
+	sf::Sprite sprite;
 
 private:
 	
 	int hitPoints;
-	sf::Sprite sprite;
 	sf::Texture * masterTexture;
 	
 };

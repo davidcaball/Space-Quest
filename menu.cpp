@@ -7,7 +7,7 @@ Menu::Menu(float width, float height){
 	}
 
 	//Set settings for play button
-	play.setColor(sf::Color::White);
+	play.setColor(sf::Color::Red);
 	play.setScale(sf::Vector2f(1.5f, 1.5f));
 	play.setString("Play");
 	play.setFont(font);

@@ -30,4 +30,5 @@ private:
 	std::vector<sf::Sprite> platforms;
 	Hero player;
 	sf::Texture * masterTexture;
+	sf::Sprite ground;
 };

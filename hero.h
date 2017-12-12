@@ -10,6 +10,5 @@ public:
 	~Hero();
 
 private:
-
 	int ammo;
 };
