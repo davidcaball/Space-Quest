@@ -49,12 +49,11 @@ void Entity::update(float delta){
 		if(temp * getVelocity().x < 0) setVelocity(sf::Vector2f(0, getVelocity().y));
 	}
 
-	if(velocity.y != 0){
+	if(sprite.getPosition().y < Constants::WINDOW_HEIGHT - 40){
 		velocity.y += Constants::GRAVITY * delta;
-		if(sprite.getPosition().y > Constants::WINDOW_HEIGHT - 40){
+	}else{
 			velocity.y = 0;
 			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));
-		}
 	}
 
 }
@@ -75,9 +74,16 @@ bool Entity::checkPlatformCollision(sf::Sprite object){
 	if(object.getPosition().y < sprite.getPosition().y 
 		&& object.getPosition().y + object.getLocalBounds().height > sprite.getPosition().y
 		&& object.getPosition().x < sprite.getPosition().x
-		&& object.getPosition().x + object.getLocalBounds().width > sprite.getPosition().x)
+		&& object.getPosition().x + object.getLocalBounds().width + sprite.getLocalBounds().width * 2 > sprite.getPosition().x)
 		return true;
 
+}
+
+int Entity::checkPlatformVectorCollision(std::vector<sf::Sprite*> platforms){
+	for(int i = 0; i < platforms.size(); i++){
+		if(checkPlatformCollision(*platforms[i])) return i;
+	}
+	return -1;
 }
 
 Entity::~Entity(){}

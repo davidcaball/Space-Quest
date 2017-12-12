@@ -1,10 +1,13 @@
 #include "game.h"
 #include <iostream>
 #include "constants.h"
+#include <time.h>
 
 Game::Game(float width, float height, sf::Texture &masterTex){
 	//set games master texture
 	masterTexture = &masterTex;
+	windowHeight = height;
+	windowWidth = width;
 
 	//initialze background
 	setBackground();
@@ -19,11 +22,14 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 
 	//initialize platform
 	platform.setTexture(*masterTexture);
-	platform.setTextureRect(sf::IntRect(1, 2554, 200, 20));
+	platform.setTextureRect(sf::IntRect(1, 2554, Constants::PLATFORM_WIDTH, 20));
 	sf::FloatRect platformRect = platform.getLocalBounds();
 	platform.setOrigin(platformRect.left, platformRect.top);
 	platform.setScale(sf::Vector2f(1.0f, 2.0f));
 	platform.setPosition(width / 2, height - 300);
+
+	//create vector of platforms
+	createPlatformVector();
 
 	//initialize players sprite 
 	player = Hero(*masterTexture);
@@ -80,6 +86,12 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	if(player.checkPlatformCollision(platform) && player.getVelocity().y > 0){
 		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
 	}
+
+	//logic to loop through a vector of platforms to see if any are colliding with player
+	int collided = player.checkPlatformVectorCollision(platforms);
+	if(collided >= 0 && player.getVelocity().y > 0){
+		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
+	}
 	
 
 
@@ -87,14 +99,41 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	player.update(delta);
 
 	//render objects and draw window
+
 	window.draw(background);
 	window.draw(ground);
 	window.draw(platform);
+
+	for(int i = 0; i < platforms.size(); i++) 
+		window.draw(*platforms[i]);
+
 	window.draw(player.sprite);
 	window.display();
 	return 1;
 }
 
-void Game::createPlatformArray(){}
+void Game::createPlatformVector(){
+	srand(time(NULL));
+	for(int i = 0; i < Constants::MAX_NUM_PLATFORMS; i++){
+		platforms.push_back(createPlatform(i + 1));
+	}
+}
+
+sf::Sprite * Game::createPlatform(int num){
+	
+
+	float xPos = rand() % static_cast<int>(windowWidth - Constants::PLATFORM_WIDTH);
+	float yPos = (rand() % 100)  + num * Constants::PLATFORM_SEPERATION;
+	std::cout << "Platform at " << xPos << ", " << yPos << std::endl;
+	sf::Sprite * newPlatform = new sf::Sprite();
+	newPlatform->setTexture(*masterTexture);
+	newPlatform->setTextureRect(sf::IntRect(1, 2554, Constants::PLATFORM_WIDTH, 20));
+	sf::FloatRect newPlatformRect = newPlatform->getLocalBounds();
+	newPlatform->setOrigin(newPlatformRect.left, newPlatformRect.top);
+	newPlatform->setScale(sf::Vector2f(1.0f, 2.0f));
+	newPlatform->setPosition(xPos, yPos);
+	return newPlatform;
+
+}
 
 

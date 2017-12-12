@@ -16,6 +16,9 @@ namespace Constants
   const float JUMP_SPEED = 5.0f;
 
 
+  const int MAX_NUM_PLATFORMS = 20;
+  const float PLATFORM_SEPERATION = 200.0f;
+  const float PLATFORM_WIDTH = 200.0f;
   const float FRICTION = 0.02f;
   const float GRAVITY = 0.035f;
 

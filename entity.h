@@ -24,6 +24,7 @@ public:
 	void setAcceleration(float acc);
 	float getAcceleration();
 	bool checkPlatformCollision(sf::Sprite object);
+	int checkPlatformVectorCollision(std::vector<sf::Sprite*> platforms);
 	sf::Sprite getSprite();
 
 	sf::Sprite sprite;

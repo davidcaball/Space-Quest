@@ -15,10 +15,12 @@ public:
 
 	int Run(sf::RenderWindow &window, float delta);
 	void setBackground();
-	void createPlatformArray();
+	void createPlatformVector();
+	sf::Sprite * createPlatform(int num);
 
 private:
-
+	float windowHeight;
+	float windowWidth;
 	int selectedItem;
 	sf::Font font;
 	std::vector<sf::Text*> items;
@@ -28,7 +30,7 @@ private:
 	sf::Music * music;
 	sf::SoundBuffer buffer;
 	sf::Sound sound;
-	std::vector<sf::Sprite> platforms;
+	std::vector<sf::Sprite*> platforms;
 	Hero player;
 	sf::Texture * masterTexture;
 	sf::Sprite ground;
