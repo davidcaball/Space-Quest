@@ -16,10 +16,10 @@ void Entity::setMoveSpeed(float speed){
 
 void Entity::setVelocity(sf::Vector2f velocityArg){
 	velocity = velocityArg;
-	if(velocity.x > Constants::PLAYER_MAX_VELOCITY)
-		velocity.x = Constants::PLAYER_MAX_VELOCITY;
-	if(velocity.x < Constants::PLAYER_MAX_VELOCITY * -1)
-		velocity.x = Constants::PLAYER_MAX_VELOCITY * -1;
+	if(velocity.x > Constants::GENERAL_MAX_VELOCITY)
+		velocity.x = Constants::GENERAL_MAX_VELOCITY;
+	if(velocity.x < Constants::GENERAL_MAX_VELOCITY * -1)
+		velocity.x = Constants::GENERAL_MAX_VELOCITY * -1;
 }
 
 sf::Vector2f Entity::getVelocity(){
@@ -48,6 +48,14 @@ void Entity::update(float delta){
 							   	getVelocity().y));
 		if(temp * getVelocity().x < 0) setVelocity(sf::Vector2f(0, getVelocity().y));
 	}
+
+	if(velocity.y != 0){
+		velocity.y += Constants::GRAVITY * delta;
+		if(sprite.getPosition().y > Constants::WINDOW_HEIGHT - 40){
+			velocity.y = 0;
+			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));
+		}
+	}
 }
 
 float Entity::getMoveSpeed(){
@@ -58,6 +66,9 @@ sf::Sprite Entity::getSprite(){
 	return sprite;
 }
 
+void Entity::jump(){
+	velocity.y = Constants::JUMP_SPEED * -1;
+}
 
 Entity::~Entity(){}
 

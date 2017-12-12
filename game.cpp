@@ -51,12 +51,14 @@ int Game::Run(sf::RenderWindow &window, float delta){
 
 	while(window.pollEvent(e)){ //step through all events
 		if(e.type == sf::Event::JoystickButtonPressed){
-			if(e.joystickButton.button == 7) return -1;
+			if(e.joystickButton.button == 7) return 0;
+			if(e.joystickButton.button == 2){
+				player.jump();
+			}		
 		}
 		if(e.type == sf::Event::JoystickMoved){
-				
-	
-			}
+		
+		}
 	}
 
 	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == 100){
