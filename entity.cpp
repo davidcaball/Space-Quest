@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "constants.h"
+#include<iostream>
 
 
 Entity::Entity(){
@@ -39,6 +40,7 @@ void Entity::move(float x, float y){
 }
 
 void Entity::update(float delta){
+	setVelocity(sf::Vector2f(velocity.x, velocity.y));
 	sprite.setPosition(sprite.getPosition().x + velocity.x * delta, sprite.getPosition().y + velocity.y * delta);
 
 	//friction
@@ -54,7 +56,7 @@ void Entity::update(float delta){
 	//checks if sprite is below the ground level, corrects if it is.
 	//if it is above ground gravity acts on it
 	if(sprite.getPosition().y < Constants::WINDOW_HEIGHT - 40){
-		velocity.y += Constants::GRAVITY * delta;
+		setVelocity(sf::Vector2f(velocity.x, velocity.y + Constants::GRAVITY * delta));
 	}else{
 			velocity.y = 0;
 			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));

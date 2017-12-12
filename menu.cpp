@@ -6,6 +6,8 @@ Menu::Menu(float width, float height){
 		//error
 	}
 
+	//initialize view
+	view = sf::View(sf::FloatRect(0,0,width, height));
 	//Set settings for play button
 	play.setColor(sf::Color::Red);
 	play.setScale(sf::Vector2f(1.5f, 1.5f));
@@ -109,6 +111,7 @@ int Menu::Run(sf::RenderWindow &window, float delta){
 	}
 
 	//render objects and draw window
+	window.setView(view);
 	window.draw(background);
 	window.draw(play);
 	window.draw(controls);

@@ -17,9 +17,11 @@ public:
 	void setBackground();
 	void createPlatformVector();
 	void updateView();
+	void updateBackground();
 	sf::Sprite * createPlatform(int num);
 
 private:
+	bool backgroundChanged;
 	float windowHeight;
 	float windowWidth;
 	sf::View view;

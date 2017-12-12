@@ -7,6 +7,7 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 
 	//initialize view
 	view = sf::View(sf::FloatRect(0,0,width, height));
+	backgroundChanged = false;
 
 	//set games master texture
 	masterTexture = &masterTex;
@@ -23,14 +24,6 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	ground.setOrigin(groundRect.left, groundRect.top);
 	ground.setScale(sf::Vector2f(1.0f, 2.0f));
 	ground.setPosition(0, height - 40);
-
-	//initialize platform
-	platform.setTexture(*masterTexture);
-	platform.setTextureRect(sf::IntRect(1, 2554, Constants::PLATFORM_WIDTH, 20));
-	sf::FloatRect platformRect = platform.getLocalBounds();
-	platform.setOrigin(platformRect.left, platformRect.top);
-	platform.setScale(sf::Vector2f(1.0f, 2.0f));
-	platform.setPosition(width / 2, height - 300);
 
 	//create vector of platforms
 	createPlatformVector();
@@ -61,6 +54,8 @@ void Game::setBackground(){
 	sf::Sprite bg;
     bg.setTexture(*masterTexture);
     bg.setTextureRect(sf::IntRect(0, 1335, 1600, 1200));
+    bg.setOrigin(bg.getLocalBounds().left + bg.getLocalBounds().width / 2, 
+    	bg.getLocalBounds().top + bg.getLocalBounds().height / 2);
     background = bg;
 }
 
@@ -72,7 +67,15 @@ int Game::Run(sf::RenderWindow &window, float delta){
 			if(e.joystickButton.button == 7) return 0;
 			if(e.joystickButton.button == 2){
 				player.jump();
-			}		
+			}	
+			if(e.joystickButton.button == 4){
+				player.airDodge();
+			}	
+			//TODO remove this
+			if(e.joystickButton.button == 6){
+				std::cout << player.sprite.getPosition().x << ","
+				<< player.sprite.getPosition().y << ", " << std::endl;
+			}	
 		}
 		if(e.type == sf::Event::JoystickMoved){
 		
@@ -86,27 +89,27 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		player.setVelocity(sf::Vector2f(player.getVelocity().x + player.getAcceleration() * delta * -1, player.getVelocity().y));
 	}
 
-	//logic to allow player to jump up through platform, but not down
-	if(player.checkPlatformCollision(platform) && player.getVelocity().y > 0){
-		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
-	}
 
 	//logic to loop through a vector of platforms to see if any are colliding with player
 	int collided = player.checkPlatformVectorCollision(platforms);
 	if(collided >= 0 && player.getVelocity().y > 0){
+		player.restoreJumps();
 		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
 	}
 	
 	//update view to follow player
 	updateView();
 
+	//update background to follow View and get darker
+	updateBackground();
+
+	//update player
 	player.update(delta);
 
 	//render objects and draw window
 	window.setView(view);
 	window.draw(background);
 	window.draw(ground);
-	window.draw(platform);
 
 	for(int i = 0; i < platforms.size(); i++) 
 		window.draw(*platforms[i]);
@@ -126,8 +129,8 @@ void Game::createPlatformVector(){
 sf::Sprite * Game::createPlatform(int num){
 	
 
-	float xPos = rand() % static_cast<int>(windowWidth - Constants::PLATFORM_WIDTH);
-	float yPos = (rand() % 100)  + num * Constants::PLATFORM_SEPERATION;
+	int xPos = rand() % static_cast<int>(windowWidth - Constants::PLATFORM_WIDTH);
+	int yPos = windowHeight - ((rand() % 100)  + num * Constants::PLATFORM_SEPERATION);
 	std::cout << "Platform at " << xPos << ", " << yPos << std::endl;
 	sf::Sprite * newPlatform = new sf::Sprite();
 	newPlatform->setTexture(*masterTexture);
@@ -145,4 +148,49 @@ void Game::updateView(){
 	if(yPos > windowHeight / 2) yPos = windowHeight / 2;
 	view.setCenter(sf::Vector2f(windowWidth / 2, yPos));
 }
+
+void Game::updateBackground(){
+	
+	float yPos = player.sprite.getPosition().y;
+
+	//if player gets back to searth from space, change texture back to sky
+	if(backgroundChanged && yPos > -38000){
+		background.setTextureRect(sf::IntRect(0, 1335, 1600, 1200));
+		backgroundChanged = false;
+	}
+
+	if(yPos > windowHeight / 2) yPos = windowHeight / 2;
+	background.setPosition(sf::Vector2f(windowWidth / 2, yPos));
+	float ratio = yPos / (windowHeight / 2) * 5;
+	float red = 255 + ratio;
+	float green = 255 + ratio;
+	float blue = 255 + ratio * .8;
+	//conditions stop color from looping over back to white
+	if(red < 0) red = 0;
+	if(green < 0) green = 0;
+	if(blue < 0) blue = 0;
+	if(yPos < 0) background.setColor(sf::Color(red, green, blue));
+
+	//once player gets high enough, stars appear
+	if(yPos < -38000 && !backgroundChanged){
+		background.setTextureRect(sf::IntRect(0, 2590, 1600, 1200));
+		background.setColor(sf::Color(0,0,0));
+		backgroundChanged = true;
+	}
+	//stars gradually fade in
+	if(yPos < -38000){
+		ratio = (yPos + 38000) / (windowHeight / 2) * 10;
+		red = 0 - ratio;
+		green = 0 - ratio;
+		blue = 0 - ratio;
+
+		if(blue > 255) blue = 255;
+		if(red > 255) red = 255;
+		if(green > 255) green = 255;
+
+		background.setColor(sf::Color(red, green, blue));
+	}
+}
+
+
 

@@ -13,14 +13,18 @@ namespace Constants
   const float PLAYER_MOVE_SPEED = 2.0f;
   const float PLAYER_ACCELERATION = 0.03f;
   const float PLAYER_MAX_VELOCITY = 1.2f;
-  const float JUMP_SPEED = 5.0f;
+  const float PLAYER_MAX_FALL_SPEED = 4.0f;
+  const float AIR_DODGE_TIME = 300.0f;
+  const float AIR_DODGE_SPEED = 3.0f;
+  const float JUMP_SPEED = 4.5f;
+  const int NUM_JUMPS = 2;
 
 
-  const int MAX_NUM_PLATFORMS = 20;
+  const int MAX_NUM_PLATFORMS = 400;
   const float PLATFORM_SEPERATION = 200.0f;
   const float PLATFORM_WIDTH = 200.0f;
   const float FRICTION = 0.02f;
-  const float GRAVITY = 0.035f;
+  const float GRAVITY = 0.03f;
 
 }
 #endif

@@ -19,7 +19,9 @@ public:
 
 private:
 
+
 	int selectedItem;
+	sf::View view;
 	sf::Font font;
 	sf::Text play;
 	sf::Text controls;
