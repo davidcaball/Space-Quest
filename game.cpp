@@ -1,5 +1,6 @@
 #include "game.h"
 #include <iostream>
+#include "constants.h"
 
 Game::Game(float width, float height, sf::Texture &masterTex){
 	//set games master texture
@@ -20,12 +21,13 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	player = Hero(*masterTexture);
 	player.sprite.setTexture(*masterTexture);
 	player.sprite.setTextureRect(sf::IntRect(1, 62, 18, 23));
-	player.sprite.setScale(sf::Vector2f(2.5f, 2.5f));
+	player.sprite.setScale(sf::Vector2f(3.0f, 3.0f));
 
 	sf::FloatRect playerRect = player.sprite.getLocalBounds();
 	player.sprite.setOrigin(playerRect.left + playerRect.width, 
 		playerRect.top + playerRect.height);
 	player.sprite.setPosition(width / 2, ground.getPosition().y);
+	player.setMoveSpeed(Constants::PLAYER_MOVE_SPEED);
 
 }
 
@@ -49,6 +51,17 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		if(e.type == sf::Event::JoystickButtonPressed){
 			if(e.joystickButton.button == 7) return -1;
 		}
+		if(e.type == sf::Event::JoystickMoved){
+				
+	
+			}
+	}
+
+	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 0){
+		player.move(player.getMoveSpeed() * delta, 0);
+	}
+	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) < 0){
+		player.move(player.getMoveSpeed() * delta * -1, 0);
 	}
 
 	//render objects and draw window

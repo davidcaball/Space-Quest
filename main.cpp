@@ -3,6 +3,7 @@
 #include "screen.h"
 #include "menu.h"
 #include "game.h"
+#include "constants.h"
 #include <SFML/Audio.hpp>
 
 
@@ -34,7 +35,7 @@ int main()
     sf::Time elapsed;
 
     //Create Render window
-    sf::RenderWindow window(sf::VideoMode(1600, 1200), "Space Quest");
+    sf::RenderWindow window(sf::VideoMode(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT), "Space Quest");
 
     //Create Menu
     //TODO create single texture file
