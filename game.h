@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "screen.h"
+#include "hero.h"
 
 
 //menu class inherits the screen class and overrids the Run function
@@ -9,11 +10,11 @@ class Game : public Screen{
 
 public:
 
-	Game(float width, float height);
+	Game(float width, float height, sf::Texture &masterTexture);
 	~Game();
 
 	int Run(sf::RenderWindow &window, float delta);
-	void setBackground(sf::Texture &backgroundTexture);
+	void setBackground();
 
 private:
 
@@ -27,5 +28,6 @@ private:
 	sf::SoundBuffer buffer;
 	sf::Sound sound;
 	std::vector<sf::Sprite> platforms;
-	//Hero player;
+	Hero player;
+	sf::Texture * masterTexture;
 };

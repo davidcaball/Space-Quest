@@ -1,17 +1,22 @@
 #include "game.h"
 #include <iostream>
 
-Game::Game(float width, float height){
+Game::Game(float width, float height, sf::Texture &masterTex){
+	masterTexture = &masterTex; 
+	player = Hero(*masterTexture);
+
 
 }
+
 
 Game::~Game(){
 
 }
 
-void Game::setBackground(sf::Texture &backgroundTexture){
+
+void Game::setBackground(){
 	sf::Sprite bg;
-    bg.setTexture(backgroundTexture);
+    bg.setTexture(*masterTexture);
     bg.setTextureRect(sf::IntRect(0, 1335, 1600, 1200));
     background = bg;
 }

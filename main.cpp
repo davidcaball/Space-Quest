@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "menu.h"
 #include "screen.h"
+#include "menu.h"
 #include "game.h"
 #include <SFML/Audio.hpp>
 
@@ -74,7 +74,7 @@ Menu createMenu(sf::Window &window, sf::Texture &bg){
 
 Game createGame(sf::Window &window, sf::Texture &bg){
 
-    Game game(window.getSize().x, window.getSize().y);
-    game.setBackground(bg);
+    Game game(window.getSize().x, window.getSize().y, bg);
+    game.setBackground();
     return game;
 }
