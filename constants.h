@@ -23,6 +23,7 @@ namespace Constants
   const int NUM_SNAKES = 40;
   const float SNAKE_SCALE = 3.0f;
   const float SNAKE_SPEED = 0.2f;
+  const float COLLISION_BUFFER = 2.0f;
 
   const int MAX_NUM_PLATFORMS = 400;
   const float PLATFORM_SEPERATION = 200.0f;

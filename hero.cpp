@@ -1,6 +1,7 @@
 #include "hero.h"
 #include "constants.h"
 #include <iostream>
+#include <math.h> 
 
 Hero::Hero(sf::Texture &tex){
 	setTexture(tex);
@@ -130,6 +131,33 @@ void Hero::restoreAirDodge(){
 	airDodgeTimer = Constants::AIR_DODGE_TIME;
 	canAirDodge = true;
 }
+
+//checks collision between two entities
+bool Hero::checkSnakeCollision(Snake object){
+	sf::Vector2f spriteCenter(sprite.getPosition().x - sprite.getOrigin().x + sprite.getLocalBounds().width / 2,
+		sprite.getPosition().y - sprite.getOrigin().y + sprite.getLocalBounds().height / 2);
+
+	sf::Vector2f objectCenter(object.sprite.getPosition().x - object.sprite.getOrigin().x + object.sprite.getLocalBounds().width / 2,
+		object.sprite.getPosition().y - object.sprite.getOrigin().y + object.sprite.getLocalBounds().height / 2);
+
+	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((objectCenter.y - objectCenter.y), 2));
+	
+	if(distance < Constants::COLLISION_BUFFER){
+		return true;
+	}
+	return false;
+}
+
+//checks collision of a vector of entities, returns index of entity
+//that is colliding
+int Hero::checkSnakeVectorCollision(std::vector<Snake*> objectList){
+	for(int i = 0; i < objectList.size(); i++){
+		if(checkSnakeCollision(*objectList[i]))
+			return i;
+	}
+	return -1;
+}
+
 
 Hero::~Hero(){}
 

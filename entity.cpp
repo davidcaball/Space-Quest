@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "constants.h"
 #include<iostream>
+#include <cmath>
 
 
 Entity::Entity(){
@@ -76,6 +77,7 @@ void Entity::jump(){
 	velocity.y = Constants::JUMP_SPEED * -1;
 }
 
+//checks collision with a single platform and returns true if they collide
 bool Entity::checkPlatformCollision(sf::Sprite object){
 	//checking bounds of both object to see if they intersect
 	if(object.getPosition().y < sprite.getPosition().y 
@@ -86,9 +88,37 @@ bool Entity::checkPlatformCollision(sf::Sprite object){
 
 }
 
+//checks collision of all platforms in a vector, returns index of platform
+//that is being collided with
 int Entity::checkPlatformVectorCollision(std::vector<Platform*> platforms){
 	for(int i = 0; i < platforms.size(); i++){
 		if(checkPlatformCollision(platforms[i]->sprite)) return i;
+	}
+	return -1;
+}
+
+//checks collision between two entities
+bool Entity::checkEntityCollision(Entity object){
+	sf::Vector2f spriteCenter(sprite.getPosition().x - sprite.getOrigin().x + sprite.getLocalBounds().width / 2,
+		sprite.getPosition().y - sprite.getOrigin().y + sprite.getLocalBounds().height / 2);
+
+	sf::Vector2f objectCenter(object.sprite.getPosition().x - object.sprite.getOrigin().x + object.sprite.getLocalBounds().width / 2,
+		object.sprite.getPosition().y - object.sprite.getOrigin().y + object.sprite.getLocalBounds().height / 2);
+
+	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((objectCenter.y - objectCenter.y), 2));
+	
+	if(distance < Constants::COLLISION_BUFFER){
+		return true;
+	}
+	return false;
+}
+
+//checks collision of a vector of entities, returns index of entity
+//that is colliding
+int Entity::checkEntityVectorCollision(std::vector<Entity*> objectList){
+	for(int i = 0; i < objectList.size(); i++){
+		if(checkEntityCollision(*objectList[i]))
+			return i;
 	}
 	return -1;
 }

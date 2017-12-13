@@ -96,6 +96,12 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		player.restoreAirDodge();
 		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
 	}
+
+	//logic to check for collision with snakes
+	int snakeCollision = player.checkSnakeVectorCollision(snakes);
+	if(snakeCollision >= 0){
+		std::cout << "Snake Colliding" << std::endl;
+	}
 	
 	//update view to follow player
 	updateView();
@@ -135,7 +141,7 @@ Platform * Game::createPlatform(int num){
 
 	int xPos = rand() % static_cast<int>(windowWidth - Constants::PLATFORM_WIDTH);
 	int yPos = windowHeight - ((rand() % 100)  + num * Constants::PLATFORM_SEPERATION);
-	std::cout << "Platform at " << xPos << ", " << yPos << std::endl;
+	//std::cout << "Platform at " << xPos << ", " << yPos << std::endl;
 	Platform * newPlatform = new Platform(*masterTexture, xPos, yPos);
 	return newPlatform;
 

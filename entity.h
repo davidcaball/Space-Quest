@@ -24,14 +24,15 @@ public:
 	sf::Vector2f getVelocity();
 	void setAcceleration(float acc);
 	float getAcceleration();
-	//checks collision with a single platform and returns true if they collide
+	
 	bool checkPlatformCollision(sf::Sprite object);
 
-	//checks collision of all platforms in a vector, returns index of platform
-	//that is being collided with
+
 	int checkPlatformVectorCollision(std::vector<Platform*> platforms);
+	
 	bool checkEntityCollision(Entity object);
-	int checkEntityVectorCollistion(std::vector<Entity> objectList);
+
+	int checkEntityVectorCollision(std::vector<Entity*> objectList);
 	sf::Sprite getSprite();
 
 	sf::Sprite sprite;
