@@ -124,7 +124,11 @@ int Entity::checkEntityVectorCollision(std::vector<Entity*> objectList){
 }
 
 void Entity::loseHP(){
-	
+
+}
+
+void Entity::animate(){
+
 }
 
 Entity::~Entity(){}

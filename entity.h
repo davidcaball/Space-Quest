@@ -14,6 +14,7 @@ public:
 	~Entity();
 	void update(float delta);
 	void move(float x, float y);
+	void animate();
 	void jump();
 	void loseHP();
 	void die();

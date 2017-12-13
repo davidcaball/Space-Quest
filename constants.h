@@ -24,6 +24,13 @@ namespace Constants
   const float SNAKE_SPEED = 0.2f;
   const float COLLISION_BUFFER = 25.0f; //disance between center of snake and sprite to signify collision
 
+  const int FIREBALL_DIST_MOD = 250;
+  const int NUM_FIREBALLS = 100;
+  const float FIREBALL_SCALE = 2.5f;
+  const float FIREBALL_SPEED = 1.0f;
+  const int FIREBALL_RATE = 500; //time between checks to see if fireball spawns
+  const int FIREBALL_ANIM = 1000; //length of animation cycle
+
   const float AIR_DODGE_TIME = 250.0f;
   const float HIT_ANIM_TIME = 1000.0f; //length of red/white blink and invinc
 

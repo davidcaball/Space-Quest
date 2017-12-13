@@ -4,7 +4,7 @@
 #include <time.h>
 
 Game::Game(float width, float height, sf::Texture &masterTex){
-
+	srand(time(NULL));
 	//initialize view
 	view = sf::View(sf::FloatRect(0,0,width, height));
 	backgroundChanged = false;
@@ -31,6 +31,9 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	//initialize snakes
 	createSnakeVector();
 
+	//initialize fireballs
+	fireballTimer = Constants::FIREBALL_RATE;
+
 
 	//initialize players sprite 
 	player = Hero(*masterTexture);
@@ -41,7 +44,7 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	sf::FloatRect playerRect = player.sprite.getLocalBounds();
 	player.sprite.setOrigin(playerRect.left + playerRect.width / 2, 
 		playerRect.top + playerRect.height);
-	player.sprite.setPosition(width / 2, ground.getPosition().y);
+	player.sprite.setPosition(width / 2, -30000);
 	player.setMoveSpeed(Constants::PLAYER_MOVE_SPEED);
 	player.setVelocity(sf::Vector2f(0,0));
 	player.setAcceleration(Constants::PLAYER_ACCELERATION);
@@ -65,9 +68,11 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		if(e.type == sf::Event::JoystickButtonPressed){
 			if(e.joystickButton.button == 7) return 0;
 			if(e.joystickButton.button == 2){
-				player.jump();
+				std::cout << "Input: X" << std::endl;
+ 				player.jump();
 			}	
 			if(e.joystickButton.button == 4 && player.getAirDodge()){
+				std::cout << "Input: L" << std::endl;
 				player.airDodge();
 			}	
 			//TODO remove this
@@ -104,7 +109,25 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	if(snakeCollision >= 0 && !player.isInvincible()){
 		player.loseHP();
 	}
-	
+
+	//fireball logic
+	fireballTimer -= delta;
+	if(fireballTimer < 0){
+		std::cout << "Trying to create fireball" << std::endl;
+		int chance = 2;
+		if(player.sprite.getPosition().y < -30000)
+			chance = 10;
+		else if(player.sprite.getPosition().y <-20000)
+			chance = 7;
+		else if(player.sprite.getPosition().y <-10000)
+			chance = 5;
+		else if(player.sprite.getPosition().y < -5000)
+			chance = 2;
+		int randN = rand() % 10;
+		std::cout << randN << std::endl;
+		if(randN < chance) createFireball();
+		fireballTimer = Constants::FIREBALL_RATE;
+	}
 	//update view to follow player
 	updateView();
 
@@ -127,6 +150,12 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	for(int i = 0; i < snakes.size(); i++){
 		snakes[i]->update(delta);
 		window.draw(snakes[i]->sprite);
+	}
+
+	//render fireballs
+	for(int i = 0; i < fireballs.size(); i++){
+		fireballs[i]->update(delta);
+		window.draw(fireballs[i]->sprite);
 	}
 
 	
@@ -175,6 +204,13 @@ void Game::createSnakeVector(){
 	 		}
 	 	}
 	 }
+}
+
+void Game::createFireball(){
+	float modifier = rand() % 250;
+	Fireball * newFireball = new Fireball(*masterTexture, 1640, player.sprite.getPosition().y - 500 - modifier);
+	fireballs.push_back(newFireball);
+	std::cout << "Fireball Created" << std::endl;
 }
 
 void Game::updateView(){

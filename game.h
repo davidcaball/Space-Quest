@@ -3,6 +3,7 @@
 #include <SFML/Audio.hpp>
 #include "screen.h"
 #include "hero.h"
+#include "fireball.h"
 
 //menu class inherits the screen class and overrids the Run function
 class Game : public Screen{
@@ -20,8 +21,10 @@ public:
 	Platform * createPlatform(int num);
 	Snake createSnake();
 	void createSnakeVector();
+	void createFireball();
 
 private:
+	int fireballTimer;
 	bool backgroundChanged;
 	float windowHeight;
 	float windowWidth;
@@ -37,6 +40,7 @@ private:
 	sf::Sound sound;
 	std::vector<Platform*> platforms;
 	std::vector<Snake*> snakes;
+	std::vector<Fireball*> fireballs;
 	Hero player;
 	sf::Texture * masterTexture;
 	sf::Sprite ground;

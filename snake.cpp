@@ -38,7 +38,7 @@ void Snake::animate(float delta){
 	if(animationClock > 10000000) animationClock = 0;
 
 	if(sprite.getPosition().x > home->getPosition().x 
-		+ home->getLocalBounds().width)
+		+ home->getLocalBounds().width * Constants::PLATFORM_W_SCALE)
 		velocity.x = -Constants::SNAKE_SPEED;
 	if(sprite.getPosition().x < home->getPosition().x)
 		velocity.x = Constants::SNAKE_SPEED;
