@@ -105,7 +105,7 @@ bool Entity::checkEntityCollision(Entity object){
 	sf::Vector2f objectCenter(object.sprite.getPosition().x - object.sprite.getOrigin().x + object.sprite.getLocalBounds().width / 2,
 		object.sprite.getPosition().y - object.sprite.getOrigin().y + object.sprite.getLocalBounds().height / 2);
 
-	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((objectCenter.y - objectCenter.y), 2));
+	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((spriteCenter.y - objectCenter.y), 2));
 	
 	if(distance < Constants::COLLISION_BUFFER){
 		return true;
@@ -121,6 +121,10 @@ int Entity::checkEntityVectorCollision(std::vector<Entity*> objectList){
 			return i;
 	}
 	return -1;
+}
+
+void Entity::loseHP(){
+	
 }
 
 Entity::~Entity(){}

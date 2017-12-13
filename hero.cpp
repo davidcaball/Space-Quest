@@ -8,7 +8,11 @@ Hero::Hero(sf::Texture &tex){
 	sf::Sprite sprite;
 	jumps = Constants::NUM_JUMPS;
 	airDodgeTimer = Constants::AIR_DODGE_TIME;
-	canAirDodge = true;
+	hitTimer = Constants::HIT_ANIM_TIME;
+	invincible = false;
+	canAirDodge = false;
+	hitPoints = 5;
+	hit = false; //flag for seeing if hero has been hit
 }
 
 void Hero::setVelocity(sf::Vector2f velocityArg){
@@ -27,6 +31,18 @@ void Hero::update(float delta){
 	setOrientation();
 	sprite.setPosition(sprite.getPosition().x + velocity.x * delta, sprite.getPosition().y + velocity.y * delta);
 
+	//check if player should be playing hit animation
+	if(hit){
+		hitTimer -= delta;
+		if(hitTimer % 200 > 100)
+			sprite.setColor(sf::Color::Red);
+		else sprite.setColor(sf::Color::White);
+		if(hitTimer <= 0){
+			hitTimer = Constants::HIT_ANIM_TIME;
+			hit = false;
+			invincible = false;
+		}
+	}
 	//check if player is airdodging
 	if(airDodging){
 		airDodgeTimer-= delta;
@@ -61,12 +77,14 @@ void Hero::update(float delta){
 			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));
 			restoreJumps();
 			restoreAirDodge();
+			setAirDodge(false);
 	}
 
 }
 
 void Hero::jump(){
 	if(jumps > 0){
+		canAirDodge = true;
 		velocity.y = Constants::JUMP_SPEED * -1;
 		jumps--;
 	}
@@ -77,7 +95,7 @@ bool Hero::checkPlatformCollision(sf::Sprite object){
 	if(object.getPosition().y < sprite.getPosition().y 
 		&& object.getPosition().y + object.getLocalBounds().height > sprite.getPosition().y
 		&& object.getPosition().x < sprite.getPosition().x
-		&& object.getPosition().x + object.getLocalBounds().width + sprite.getLocalBounds().width * 2 > sprite.getPosition().x){
+		&& object.getPosition().x + object.getLocalBounds().width * Constants::PLATFORM_W_SCALE + sprite.getLocalBounds().width * 1 > sprite.getPosition().x){
 		return true;
 	}
 }
@@ -117,6 +135,14 @@ void Hero::airDodge(){
 	}
 }
 
+void Hero::setAirDodge(bool toggle){
+	canAirDodge = toggle;
+}
+
+bool Hero::getAirDodge(){
+	return canAirDodge;
+}
+
 void Hero::setJumpSprite(){
 	sprite.setTextureRect(sf::IntRect(353, 62, 18, 23));
 }
@@ -140,8 +166,7 @@ bool Hero::checkSnakeCollision(Snake object){
 	sf::Vector2f objectCenter(object.sprite.getPosition().x - object.sprite.getOrigin().x + object.sprite.getLocalBounds().width / 2,
 		object.sprite.getPosition().y - object.sprite.getOrigin().y + object.sprite.getLocalBounds().height / 2);
 
-	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((objectCenter.y - objectCenter.y), 2));
-	
+	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((spriteCenter.y - objectCenter.y), 2));
 	if(distance < Constants::COLLISION_BUFFER){
 		return true;
 	}
@@ -157,6 +182,18 @@ int Hero::checkSnakeVectorCollision(std::vector<Snake*> objectList){
 	}
 	return -1;
 }
+
+bool Hero::isInvincible(){
+	return invincible;
+}
+
+void Hero::loseHP(){
+	std::cout << "I've been hit" << std::endl;
+	invincible = true;
+	hitPoints--;
+	hit = true;
+}
+
 
 
 Hero::~Hero(){}

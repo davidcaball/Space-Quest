@@ -67,7 +67,7 @@ int Game::Run(sf::RenderWindow &window, float delta){
 			if(e.joystickButton.button == 2){
 				player.jump();
 			}	
-			if(e.joystickButton.button == 4){
+			if(e.joystickButton.button == 4 && player.getAirDodge()){
 				player.airDodge();
 			}	
 			//TODO remove this
@@ -94,13 +94,15 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	if(collided >= 0 && player.getVelocity().y > 0){
 		player.restoreJumps(); //jumps and air dodge ability restored upon landing
 		player.restoreAirDodge();
+		player.setAirDodge(false);
 		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
+		player.sprite.setPosition(sf::Vector2f(player.sprite.getPosition().x, platforms[collided]->sprite.getPosition().y));
 	}
 
 	//logic to check for collision with snakes
 	int snakeCollision = player.checkSnakeVectorCollision(snakes);
-	if(snakeCollision >= 0){
-		std::cout << "Snake Colliding" << std::endl;
+	if(snakeCollision >= 0 && !player.isInvincible()){
+		player.loseHP();
 	}
 	
 	//update view to follow player

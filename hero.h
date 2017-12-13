@@ -22,10 +22,16 @@ public:
 	void restoreAirDodge();
 	//flips the sprite left or right
 	void setOrientation();
+	void loseHP();
+	void setAirDodge(bool toggle);
+	bool getAirDodge();
+	bool isInvincible();
 	bool checkSnakeCollision(Snake object);
 	int checkSnakeVectorCollision(std::vector<Snake*> objectList);
 
 private:
+	bool hit;
+	int hitTimer;
 	bool canAirDodge;
 	bool invincible;
 	bool airDodging;
