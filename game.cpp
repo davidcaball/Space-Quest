@@ -28,6 +28,10 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	//create vector of platforms
 	createPlatformVector();
 
+	//initialize snakes
+	createSnakeVector();
+
+
 	//initialize players sprite 
 	player = Hero(*masterTexture);
 	player.sprite.setTexture(*masterTexture);
@@ -41,8 +45,6 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	player.setMoveSpeed(Constants::PLAYER_MOVE_SPEED);
 	player.setVelocity(sf::Vector2f(0,0));
 	player.setAcceleration(Constants::PLAYER_ACCELERATION);
-
-	//initialize snakes
 
 
 }
@@ -90,7 +92,7 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	//logic to loop through a vector of platforms to see if any are colliding with player
 	int collided = player.checkPlatformVectorCollision(platforms);
 	if(collided >= 0 && player.getVelocity().y > 0){
-		player.restoreJumps();
+		player.restoreJumps(); //jumps and air dodge ability restored upon landing
 		player.restoreAirDodge();
 		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
 	}
@@ -109,31 +111,23 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	window.draw(background);
 	window.draw(ground);
 
-	for(int i = 0; i < platforms.size(); i++) 
+	//draw all platforms
+	for(int i = 0; i < platforms.size(); i++)
 		window.draw(platforms[i]->sprite);
+
+	//draw all snakes
+	for(int i = 0; i < snakes.size(); i++){
+		snakes[i]->update(delta);
+		window.draw(snakes[i]->sprite);
+	}
+
+	
 
 	window.draw(player.sprite);
 	window.display();
 	return 1;
 }
 
-
-// sf::Sprite * Game::createPlatform(int num){
-	
-
-// 	int xPos = rand() % static_cast<int>(windowWidth - Constants::PLATFORM_WIDTH);
-// 	int yPos = windowHeight - ((rand() % 100)  + num * Constants::PLATFORM_SEPERATION);
-// 	std::cout << "Platform at " << xPos << ", " << yPos << std::endl;
-// 	sf::Sprite * newPlatform = new sf::Sprite();
-// 	newPlatform->setTexture(*masterTexture);
-// 	newPlatform->setTextureRect(sf::IntRect(1, 2554, Constants::PLATFORM_WIDTH, 20));
-// 	sf::FloatRect newPlatformRect = newPlatform->getLocalBounds();
-// 	newPlatform->setOrigin(newPlatformRect.left, newPlatformRect.top);
-// 	newPlatform->setScale(sf::Vector2f(1.0f, 2.0f));
-// 	newPlatform->setPosition(xPos, yPos);
-// 	return newPlatform;
-
-// }
 
 
 Platform * Game::createPlatform(int num){
@@ -154,15 +148,25 @@ void Game::createPlatformVector(){
 	}
 }
 
-Snake Game::createSnake(){
-
-}
 
 void Game::createSnakeVector(){
-	// std::vector<int> occupiedPlatforms;
-	// for(int i = 0; i < Constants::NUM_SNAKES && i < platforms.size(); i++){
-	// 	while(rand() % platforms.size && )
-	// }
+	 bool added = false;
+	 int randNum;
+	 for(int i = 0; i < Constants::NUM_SNAKES && i < platforms.size(); i++){
+	 	added = false;
+	 	while(!added){
+	 		randNum = rand() % platforms.size();
+	 		if(platforms[randNum]->isOccupied()){
+	 			continue;
+	 		}
+	 		else{
+	 			std::cout << "Creating Snake" << std::endl;
+	 			Snake * newSnake = new Snake(*masterTexture, platforms[randNum]);
+	 			snakes.push_back(newSnake);
+	 			added = true;
+	 		}
+	 	}
+	 }
 }
 
 void Game::updateView(){

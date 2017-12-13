@@ -30,6 +30,8 @@ public:
 	//checks collision of all platforms in a vector, returns index of platform
 	//that is being collided with
 	int checkPlatformVectorCollision(std::vector<Platform*> platforms);
+	bool checkEntityCollision(Entity object);
+	int checkEntityVectorCollistion(std::vector<Entity> objectList);
 	sf::Sprite getSprite();
 
 	sf::Sprite sprite;

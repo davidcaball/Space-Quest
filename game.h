@@ -37,9 +37,10 @@ private:
 	sf::SoundBuffer buffer;
 	sf::Sound sound;
 	std::vector<Platform*> platforms;
-	std::vector<Snake> snakes;
+	std::vector<Snake*> snakes;
 	Hero player;
 	sf::Texture * masterTexture;
 	sf::Sprite ground;
 	sf::Sprite platform;
+	Snake snake;
 };

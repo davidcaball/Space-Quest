@@ -8,4 +8,9 @@ Platform::Platform(sf::Texture &tex, float xPos, float yPos){
 	sprite.setOrigin(newPlatformRect.left, newPlatformRect.top);
 	sprite.setScale(sf::Vector2f(1.0f, 2.0f));
 	sprite.setPosition(xPos, yPos);
+	bool occupied = false;
+}
+
+bool Platform::isOccupied(){
+	return occupied;
 }

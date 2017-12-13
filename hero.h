@@ -3,6 +3,11 @@
 class Hero : public Entity{
 
 public:	
+
+	Hero(sf::Texture &tex);
+	Hero(){}
+	~Hero();
+	
 	void update(float delta);
 	void attack();
 	void setVelocity(sf::Vector2f velocityArg);
@@ -16,9 +21,7 @@ public:
 	void restoreAirDodge();
 	//flips the sprite left or right
 	void setOrientation();
-	Hero(sf::Texture &tex);
-	Hero(){}
-	~Hero();
+	
 
 private:
 	bool canAirDodge;
