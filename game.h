@@ -4,6 +4,7 @@
 #include "screen.h"
 #include "hero.h"
 #include "fireball.h"
+#include "directedGraph.h"
 
 //menu class inherits the screen class and overrids the Run function
 class Game : public Screen{
@@ -22,8 +23,13 @@ public:
 	Snake createSnake();
 	void createSnakeVector();
 	void createFireball();
+	void assignNeighbors();
+	void verifyPlatforms();
 
 private:
+	//sf::Font font;
+	//sf::Text score;
+	float maxHeight;
 	int fireballTimer;
 	bool backgroundChanged;
 	float windowHeight;
@@ -43,6 +49,7 @@ private:
 	std::vector<Fireball*> fireballs;
 	Hero player;
 	sf::Texture * masterTexture;
+	directedGraph<int> platformGraph;
 	sf::Sprite ground;
 	sf::Sprite platform;
 	Snake snake;

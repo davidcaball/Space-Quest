@@ -2,6 +2,8 @@
 #include <iostream>
 #include "constants.h"
 #include <time.h>
+#include <cmath>
+#include <string> 
 
 Game::Game(float width, float height, sf::Texture &masterTex){
 	srand(time(NULL));
@@ -17,6 +19,7 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	//initialze background
 	setBackground();
 
+
 	//initialize ground
 	ground.setTexture(*masterTexture);
 	ground.setTextureRect(sf::IntRect(1, 2554, 1600, 20));
@@ -27,6 +30,8 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 
 	//create vector of platforms
 	createPlatformVector();
+	assignNeighbors();
+	verifyPlatforms();
 
 	//initialize snakes
 	createSnakeVector();
@@ -44,11 +49,12 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 	sf::FloatRect playerRect = player.sprite.getLocalBounds();
 	player.sprite.setOrigin(playerRect.left + playerRect.width / 2, 
 		playerRect.top + playerRect.height);
-	player.sprite.setPosition(width / 2, -30000);
+	player.sprite.setPosition(width / 2, ground.getPosition().y);
 	player.setMoveSpeed(Constants::PLAYER_MOVE_SPEED);
 	player.setVelocity(sf::Vector2f(0,0));
 	player.setAcceleration(Constants::PLAYER_ACCELERATION);
-
+	//max jump = 896
+	//max distance = 685;
 
 }
 
@@ -62,7 +68,20 @@ void Game::setBackground(){
 }
 
 int Game::Run(sf::RenderWindow &window, float delta){
+
 	sf::Event e;
+	
+	if(player.hitPoints <= 0){
+		player.sprite.setPosition(windowWidth / 2, ground.getPosition().y);
+		player.hitPoints = 10;
+		background.setTextureRect(sf::IntRect(0, 1335, 1600, 1200));
+		background.setColor(sf::Color::White);
+
+	}
+	if(player.sprite.getPosition().x > maxHeight){
+		maxHeight = player.sprite.getPosition().x;
+		std::cout << "Max: " << maxHeight << std::endl;
+	}
 
 	while(window.pollEvent(e)){ //step through all events
 		if(e.type == sf::Event::JoystickButtonPressed){
@@ -107,6 +126,13 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	//logic to check for collision with snakes
 	int snakeCollision = player.checkSnakeVectorCollision(snakes);
 	if(snakeCollision >= 0 && !player.isInvincible()){
+		player.loseHP();
+	}
+
+	//logic to check fireball collision
+	//logic to check for collision with snakes
+	int fireCollision = player.checkFireballVectorCollision(fireballs);
+	if(fireCollision >= 0 && !player.isInvincible()){
 		player.loseHP();
 	}
 
@@ -174,6 +200,7 @@ Platform * Game::createPlatform(int num){
 	int yPos = windowHeight - ((rand() % 100)  + num * Constants::PLATFORM_SEPERATION);
 	//std::cout << "Platform at " << xPos << ", " << yPos << std::endl;
 	Platform * newPlatform = new Platform(*masterTexture, xPos, yPos);
+
 	return newPlatform;
 
 }
@@ -181,8 +208,34 @@ Platform * Game::createPlatform(int num){
 void Game::createPlatformVector(){
 	srand(time(NULL));
 	for(int i = 0; i < Constants::MAX_NUM_PLATFORMS; i++){
-		platforms.push_back(createPlatform(i + 1));
+		Platform * newPlatform = createPlatform(i + 1);
+		platforms.push_back(newPlatform);
+		platformGraph.addVertex(i);
 	}
+}
+
+void Game::assignNeighbors(){
+	for(int i = 0; i < platforms.size() - 2; i++){
+		sf::Vector2f plat1Pos(platforms[i]->sprite.getPosition().x, platforms[i]->sprite.getPosition().y);
+		sf::Vector2f plat2Pos(platforms[i + 1]->sprite.getPosition().x, platforms[i + 1]->sprite.getPosition().y);
+		sf::Vector2f plat3Pos(platforms[i + 2]->sprite.getPosition().x, platforms[i + 2]->sprite.getPosition().y);
+		
+		if(sqrt(pow((plat1Pos.x - plat2Pos.x),2) + pow((plat1Pos.y - plat2Pos.y),2)) < 1200)
+			platformGraph.addDirectedEdge(i, i + 1);
+		if(sqrt(pow((plat1Pos.x - plat3Pos.x),2) + pow((plat1Pos.y - plat3Pos.y),2)) < 1200)
+			platformGraph.addDirectedEdge(i, i + 2);
+	}
+}
+
+void Game::verifyPlatforms(){
+	platformGraph.display();
+	if(!platformGraph.findPath(0, Constants::MAX_NUM_PLATFORMS - 1)){
+		platforms.clear();
+		platformGraph.clear();
+		createPlatformVector();
+		verifyPlatforms();
+	}
+
 }
 
 

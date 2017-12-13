@@ -1,6 +1,7 @@
+#pragma once
 #include "entity.h"
 #include "snake.h"
-
+#include "fireball.h"
 class Hero : public Entity{
 
 public:	
@@ -28,6 +29,8 @@ public:
 	bool isInvincible();
 	bool checkSnakeCollision(Snake object);
 	int checkSnakeVectorCollision(std::vector<Snake*> objectList);
+	bool checkFireballCollision(Fireball object);
+	int checkFireballVectorCollision(std::vector<Fireball*> objectList);
 
 private:
 	bool hit;

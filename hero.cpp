@@ -11,7 +11,7 @@ Hero::Hero(sf::Texture &tex){
 	hitTimer = Constants::HIT_ANIM_TIME;
 	invincible = false;
 	canAirDodge = false;
-	hitPoints = 5;
+	hitPoints = 10;
 	hit = false; //flag for seeing if hero has been hit
 }
 
@@ -178,6 +178,28 @@ bool Hero::checkSnakeCollision(Snake object){
 int Hero::checkSnakeVectorCollision(std::vector<Snake*> objectList){
 	for(int i = 0; i < objectList.size(); i++){
 		if(checkSnakeCollision(*objectList[i]))
+			return i;
+	}
+	return -1;
+}
+
+bool Hero::checkFireballCollision(Fireball object){
+	sf::Vector2f spriteCenter(sprite.getPosition().x - sprite.getOrigin().x + sprite.getLocalBounds().width / 2,
+		sprite.getPosition().y - sprite.getOrigin().y + sprite.getLocalBounds().height / 2);
+
+	sf::Vector2f objectCenter(object.sprite.getPosition().x - object.sprite.getOrigin().x + object.sprite.getLocalBounds().width / 2,
+		object.sprite.getPosition().y - object.sprite.getOrigin().y + object.sprite.getLocalBounds().height / 2);
+
+	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((spriteCenter.y - objectCenter.y), 2));
+	if(distance < Constants::FIREBALL_COLLISION_BUFFER){
+		return true;
+	}
+	return false;
+}
+
+int Hero::checkFireballVectorCollision(std::vector<Fireball*> objectList){
+	for(int i = 0; i < objectList.size(); i++){
+		if(checkFireballCollision(*objectList[i]))
 			return i;
 	}
 	return -1;

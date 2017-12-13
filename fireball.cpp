@@ -6,7 +6,7 @@ Fireball::Fireball(sf::Texture &tex, float xPos,float yPos){
 	sprite.setTexture(tex);
 	if(yPos < -38000){
 		sprite.setColor(sf::Color::Green);
-		velocity.x = -Constants::FIREBALL_SPEED * 1.5;
+		velocity.x = -Constants::FAST_FIREBALL_SPEED;
 	}
 	sprite.setTextureRect(sf::IntRect(737,4,25, 19));
 	sprite.setPosition(sf::Vector2f(1640, yPos));

@@ -104,7 +104,7 @@ int Menu::Run(sf::RenderWindow &window, float delta){
 						//music->stop();
 						return 1;
 					}
-					if(selectedItem == 1) return -2;
+					if(selectedItem == 1) return 2;
 					if(selectedItem == 2) return -3; 
 				}
 			}

@@ -37,12 +37,13 @@ public:
 	sf::Sprite getSprite();
 
 	sf::Sprite sprite;
+	int hitPoints;
 
 protected:
 
 	float moveSpeed;
 	float acceleration;
-	int hitPoints;
+	
 	sf::Texture * masterTexture;
 	sf::Vector2f velocity;
 	

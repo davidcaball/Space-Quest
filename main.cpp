@@ -5,6 +5,7 @@
 #include "game.h"
 #include "constants.h"
 #include <SFML/Audio.hpp>
+#include "controls.h"
 
 
 //g++ -c main.cpp
@@ -24,7 +25,11 @@
 
 
 Menu createMenu(sf::Window &window, sf::Texture &bg);	
-Game createGame(sf::Window &window, sf::Texture &bg);   
+Game createGame(sf::Window &window, sf::Texture &bg); 
+ControlScreen createControlScreen(sf::Window &window, sf::Texture &bg); 
+
+
+
 
 int main()
 {   
@@ -47,12 +52,14 @@ int main()
 
     Menu menu = createMenu(window, masterTexture);
     Game game = createGame(window, masterTexture);
+    ControlScreen controls = createControlScreen(window, masterTexture);
 
     //create a vector of screens to handle changing between them
     std::vector<Screen*> screens;
     int screen = 0;
     screens.push_back(&menu);
     screens.push_back(&game);
+    screens.push_back(&controls);
 
     //Render graphics
     while (screen >= 0)
@@ -77,4 +84,10 @@ Game createGame(sf::Window &window, sf::Texture &bg){
 
     Game game(window.getSize().x, window.getSize().y, bg);
     return game;
+}
+
+ControlScreen createControlScreen(sf::Window &window, sf::Texture &bg){
+
+    ControlScreen controls(window.getSize().x, window.getSize().y, bg);
+    return controls;
 }
