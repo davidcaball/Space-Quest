@@ -1,5 +1,5 @@
-#include "hero.h"
-#include "constants.h"
+#include "../headers/hero.h"
+#include "../headers/constants.h"
 #include <iostream>
 #include <math.h> 
 

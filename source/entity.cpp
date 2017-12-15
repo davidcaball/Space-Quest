@@ -1,5 +1,5 @@
-#include "entity.h"
-#include "constants.h"
+#include "../headers/entity.h"
+#include "../headers/constants.h"
 #include<iostream>
 #include <cmath>
 

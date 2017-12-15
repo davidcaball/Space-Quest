@@ -1,4 +1,4 @@
-#include "controls.h"
+#include "../headers/controls.h"
 #include <iostream>
 
 ControlScreen::ControlScreen(float width, float height){

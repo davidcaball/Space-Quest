@@ -1,5 +1,5 @@
-#include "fireball.h"
-#include "constants.h"
+#include "../headers/fireball.h"
+#include "../headers/constants.h"
 #include <iostream>
 
 Fireball::Fireball(sf::Texture &tex, float xPos,float yPos){

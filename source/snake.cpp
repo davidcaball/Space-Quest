@@ -1,5 +1,5 @@
-#include "snake.h"
-#include "constants.h"
+#include "../headers/snake.h"
+#include "../headers/constants.h"
 #include <iostream>
 
 Snake::Snake(sf::Texture &tex, Platform * platform){

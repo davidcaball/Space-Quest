@@ -1,5 +1,5 @@
-#include "platform.h"
-#include "constants.h"
+#include "../headers/platform.h"
+#include "../headers/constants.h"
 
 Platform::Platform(sf::Texture &tex, float xPos, float yPos){
 	sprite.setTexture(tex);

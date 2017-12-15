@@ -1,6 +1,6 @@
-#include "game.h"
+#include "../headers/game.h"
 #include <iostream>
-#include "constants.h"
+#include "../headers/constants.h"
 #include <time.h>
 #include <cmath>
 #include <string> 

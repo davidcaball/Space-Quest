@@ -1,11 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "screen.h"
-#include "menu.h"
-#include "game.h"
-#include "constants.h"
+#include "../headers/screen.h"
+#include "../headers/menu.h"
+#include "../headers/game.h"
+#include "../headers/constants.h"
 #include <SFML/Audio.hpp>
-#include "controls.h"
+#include "../headers/controls.h"
 
 
 //g++ -c main.cpp
