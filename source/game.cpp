@@ -122,7 +122,7 @@ int Game::Run(sf::RenderWindow &window, float delta){
 
 	//logic to check fireball collision
 	//logic to check for collision with snakes
-	int fireCollision = player.checkFireballVectorCollision(fireballs);
+	int fireCollision = player.checkEntityVectorCollision(fireballs, Constants::FIREBALL_COLLISION_BUFFER);
 	if(fireCollision >= 0 && !player.isInvincible()){
 		player.loseHP();
 	}

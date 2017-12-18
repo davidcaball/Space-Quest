@@ -11,6 +11,7 @@ public:
 	void update(float delta);
 	void animate(float delta);
 	void destroy();
+	sf::Sprite * getSprite();
 private:
 	int animationTimer;
 };

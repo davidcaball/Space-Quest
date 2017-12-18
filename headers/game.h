@@ -60,7 +60,7 @@ private:
 	Hero player;
 	std::vector<Platform*> platforms;
 	std::vector<Entity*> snakes;
-	std::vector<Fireball*> fireballs;
+	std::vector<Entity*> fireballs;
 	Snake snake;
 
 	directedGraph<int> platformGraph;

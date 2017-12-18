@@ -49,6 +49,10 @@ void Fireball::destroy(){
 
 }
 
+sf::Sprite * Fireball::getSprite(){
+	return sprite;
+}
+
 Fireball::~Fireball(){
 
 }
