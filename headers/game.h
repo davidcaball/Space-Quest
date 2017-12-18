@@ -34,6 +34,7 @@ public:
 
 private:
 	int timer;
+	int fps;
 	float windowHeight;
 	float windowWidth;
 
@@ -49,8 +50,7 @@ private:
 	bool backgroundChanged;
 	
 	sf::Font font;
-	std::vector<sf::Text*> items;
-
+	sf::Text score;
 	//music is declared as a pointer as a workaround to not being able to use classes
 	//that inherit sf::nonCopyable
 	sf::Music * music;

@@ -28,7 +28,6 @@ void Snake::update(float delta){
 }
 
 void Snake::animate(float delta){
-	std::cout << "Snake Animation " << std::endl;
 	if(velocity.x > 0) sprite->setScale(sf::Vector2f(scale, scale));
 	if(velocity.x < 0) sprite->setScale(sf::Vector2f(-scale, scale));
 

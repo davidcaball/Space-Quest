@@ -7,9 +7,18 @@
 
 Game::Game(float width, float height, sf::Texture &masterTex){
 	srand(time(NULL));
+	timer = 0;
 	//initialize view
 	view = sf::View(sf::FloatRect(0,0,width, height));
 	backgroundChanged = false;
+
+	//set fps counter
+	font.loadFromFile("resources/arial.ttf");
+	score.setFont(font);
+	score.setString("0");
+	score.setColor(sf::Color::Yellow);
+	score.setCharacterSize(100);
+
 
 	//set games master texture
 	masterTexture = &masterTex;
@@ -66,6 +75,17 @@ void Game::setBackground(){
 }
 
 int Game::Run(sf::RenderWindow &window, float delta){
+	fps++;
+	timer+= delta;
+	if(timer > 1000){
+		score.setString(std::to_string(static_cast<int>(fps)));
+		fps = 0;
+		timer = 0;
+	}
+
+	score.setPosition(view.getCenter().x - 750, view.getCenter().y - 600);
+	
+	std::cout << "Delta: " << delta << std::endl;
 	sf::Event e;
 	
 	if(player.hitPoints <= 0){
@@ -77,7 +97,6 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	}
 	if(player.getSprite()->getPosition().x > maxHeight){
 		maxHeight = player.getSprite()->getPosition().x;
-		std::cout << "Max: " << maxHeight << std::endl;
 	}
 
 	while(window.pollEvent(e)){ //step through all events
@@ -85,11 +104,9 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		if(e.type == sf::Event::JoystickButtonPressed || e.type == sf::Event::KeyPressed){
 			if(e.joystickButton.button == 7) return 0;
 			if(e.joystickButton.button == 2 || e.key.code == sf::Keyboard::Up){
-				std::cout << "Input: X" << std::endl;
  				player.jump();
 			}	
 			if((e.joystickButton.button == 4 || e.key.code == sf::Keyboard::Space) && player.getAirDodge()){
-				std::cout << "Input: L" << std::endl;
 				player.airDodge();
 			}	
 		}
@@ -130,7 +147,6 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	//fireball logic
 	fireballTimer -= delta;
 	if(fireballTimer < 0){
-		std::cout << "Trying to create fireball" << std::endl;
 		int chance = 2;
 		if(player.getSprite()->getPosition().y < -30000)
 			chance = 10;
@@ -141,7 +157,6 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		else if(player.getSprite()->getPosition().y < -5000)
 			chance = 2;
 		int randN = rand() % 10;
-		std::cout << randN << std::endl;
 		if(randN < chance) createFireball();
 		fireballTimer = Constants::FIREBALL_RATE;
 	}
@@ -178,6 +193,7 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	
 
 	window.draw(*player.getSprite());
+	window.draw(score);
 	window.display();
 	return 1;
 }
@@ -189,7 +205,6 @@ Platform * Game::createPlatform(int num){
 
 	int xPos = rand() % static_cast<int>(windowWidth - Constants::PLATFORM_WIDTH);
 	int yPos = windowHeight - ((rand() % 100)  + num * Constants::PLATFORM_SEPERATION);
-	//std::cout << "Platform at " << xPos << ", " << yPos << std::endl;
 	Platform * newPlatform = new Platform(*masterTexture, xPos, yPos);
 
 	return newPlatform;
@@ -224,6 +239,7 @@ void Game::verifyPlatforms(){
 		platforms.clear();
 		platformGraph.clear();
 		createPlatformVector();
+		assignNeighbors();
 		verifyPlatforms();
 	}
 
@@ -241,7 +257,6 @@ void Game::createSnakeVector(){
 	 			continue;
 	 		}
 	 		else{
-	 			std::cout << "Creating Snake" << std::endl;
 	 			Snake * newSnake = new Snake(*masterTexture, platforms[randNum]);
 	 			snakes.push_back(newSnake);
 	 			added = true;
@@ -254,7 +269,6 @@ void Game::createFireball(){
 	float modifier = rand() % 250;
 	Fireball * newFireball = new Fireball(*masterTexture, 1640, player.getSprite()->getPosition().y - 500 - modifier);
 	fireballs.push_back(newFireball);
-	std::cout << "Fireball Created" << std::endl;
 }
 
 void Game::updateView(){

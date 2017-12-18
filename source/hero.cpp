@@ -3,6 +3,9 @@
 #include <iostream>
 #include <math.h> 
 
+
+// ************ Constructors ************
+
 Hero::Hero(sf::Texture &tex){
 	setTexture(tex);
 	sprite = new sf::Sprite();
@@ -18,6 +21,9 @@ Hero::Hero(sf::Texture &tex){
 	baseAcceleration = Constants::PLAYER_ACCELERATION;
 }
 
+
+// ************ Setters ************
+
 void Hero::setVelocity(float x, float y){
 	velocity.x = x;
 	velocity.y = y;
@@ -30,6 +36,68 @@ void Hero::setVelocity(float x, float y){
 		velocity.y = Constants::PLAYER_MAX_FALL_SPEED;
 
 }
+
+void Hero::setAirDodge(bool toggle){
+	canAirDodge = toggle;
+}
+
+void Hero::setOrientation(){
+	float scale = Constants::SPRITE_SCALE;
+	if(velocity.x > 0) sprite->setScale(scale, scale);
+	else if(velocity.x < 0) sprite->setScale(-scale, scale);
+}
+
+void Hero::setJumpSprite(){
+	sprite->setTextureRect(sf::IntRect(353, 62, 18, 23));
+}
+
+
+// ************ Getters ************
+
+bool Hero::getAirDodge(){
+	return canAirDodge;
+}
+
+bool Hero::isInvincible(){
+	return invincible;
+}
+
+// ************ Movement ************
+
+void Hero::jump(){
+	if(jumps > 0){
+		canAirDodge = true;
+		velocity.y = Constants::JUMP_SPEED * -1;
+		jumps--;
+	}
+}
+
+
+//air dodging makes you invincible and moves you quickly in a direction
+void Hero::airDodge(){
+	if(canAirDodge){
+		invincible = true;
+		airDodging = true;
+		canAirDodge = false;
+		if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == 100){
+			velocity.x = Constants::AIR_DODGE_SPEED;
+		}
+		if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == -100){
+			velocity.x = -Constants::AIR_DODGE_SPEED;
+		}
+		if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) == 100){
+			velocity.y = Constants::AIR_DODGE_SPEED;
+		}
+		if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) == -100){
+			velocity.y = -Constants::AIR_DODGE_SPEED;
+		}
+		sprite->setTextureRect(sf::IntRect(578, 60, 17, 24));
+	}
+}
+
+
+
+
 
 void Hero::update(float delta){
 
@@ -88,18 +156,12 @@ void Hero::update(float delta){
 
 }
 
-void Hero::jump(){
-	if(jumps > 0){
-		canAirDodge = true;
-		velocity.y = Constants::JUMP_SPEED * -1;
-		jumps--;
-	}
-}
+
 
 bool Hero::checkPlatformCollision(sf::Sprite object){
 	//checking bounds of both object to see if they intersect
 	if(object.getPosition().y < sprite->getPosition().y 
-		&& object.getPosition().y + object.getLocalBounds().height > sprite->getPosition().y
+		&& object.getPosition().y + object.getLocalBounds().height  + 20> sprite->getPosition().y
 		&& object.getPosition().x < sprite->getPosition().x
 		&& object.getPosition().x + object.getLocalBounds().width * Constants::PLATFORM_W_SCALE + sprite->getLocalBounds().width * 1 > sprite->getPosition().x){
 		return true;
@@ -119,45 +181,8 @@ void Hero::restoreJumps(){
 	jumps = Constants::NUM_JUMPS;
 }
 
-//air dodging makes you invincible and moves you quickly in a direction
-void Hero::airDodge(){
-	if(canAirDodge){
-		invincible = true;
-		airDodging = true;
-		canAirDodge = false;
-		if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == 100){
-			velocity.x = Constants::AIR_DODGE_SPEED;
-		}
-		if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == -100){
-			velocity.x = -Constants::AIR_DODGE_SPEED;
-		}
-		if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) == 100){
-			velocity.y = Constants::AIR_DODGE_SPEED;
-		}
-		if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) == -100){
-			velocity.y = -Constants::AIR_DODGE_SPEED;
-		}
-		sprite->setTextureRect(sf::IntRect(578, 60, 17, 24));
-	}
-}
 
-void Hero::setAirDodge(bool toggle){
-	canAirDodge = toggle;
-}
 
-bool Hero::getAirDodge(){
-	return canAirDodge;
-}
-
-void Hero::setJumpSprite(){
-	sprite->setTextureRect(sf::IntRect(353, 62, 18, 23));
-}
-
-void Hero::setOrientation(){
-	float scale = Constants::SPRITE_SCALE;
-	if(velocity.x > 0) sprite->setScale(scale, scale);
-	else if(velocity.x < 0) sprite->setScale(-scale, scale);
-}
 
 void Hero::restoreAirDodge(){
 	airDodgeTimer = Constants::AIR_DODGE_TIME;
@@ -189,31 +214,7 @@ int Hero::checkSnakeVectorCollision(std::vector<Snake*> objectList){
 	return -1;
 }
 
-bool Hero::checkFireballCollision(Fireball object){
-	sf::Vector2f spriteCenter(sprite->getPosition().x - sprite->getOrigin().x + sprite->getLocalBounds().width / 2,
-		sprite->getPosition().y - sprite->getOrigin().y + sprite->getLocalBounds().height / 2);
 
-	sf::Vector2f objectCenter(object.getSprite()->getPosition().x - object.getSprite()->getOrigin().x + object.getSprite()->getLocalBounds().width / 2,
-		object.getSprite()->getPosition().y - object.getSprite()->getOrigin().y + object.getSprite()->getLocalBounds().height / 2);
-
-	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((spriteCenter.y - objectCenter.y), 2));
-	if(distance < Constants::FIREBALL_COLLISION_BUFFER){
-		return true;
-	}
-	return false;
-}
-
-int Hero::checkFireballVectorCollision(std::vector<Fireball*> objectList){
-	for(int i = 0; i < objectList.size(); i++){
-		if(checkFireballCollision(*objectList[i]))
-			return i;
-	}
-	return -1;
-}
-
-bool Hero::isInvincible(){
-	return invincible;
-}
 
 void Hero::loseHP(){
 	std::cout << "I've been hit" << std::endl;

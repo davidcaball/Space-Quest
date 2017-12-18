@@ -147,7 +147,6 @@ int Entity::checkPlatformVectorCollision(std::vector<Platform*> platforms){
 bool Entity::checkEntityCollision(Entity * object, float collisionBuffer){
 	sf::Vector2f spriteCenter(sprite->getPosition().x - sprite->getOrigin().x + sprite->getLocalBounds().width / 2,
 		sprite->getPosition().y - sprite->getOrigin().y + sprite->getLocalBounds().height / 2);
-	std::cout << "Sprite loaction " << sprite->getPosition().x << ", " << sprite->getPosition().y << "Snake Location: " << object->getSprite()->getPosition().x << ", " << object->getSprite()->getPosition().y  << std::endl;
 	sf::Vector2f objectCenter(object->getSprite()->getPosition().x - object->getSprite()->getOrigin().x + object->getSprite()->getLocalBounds().width / 2,
 		object->getSprite()->getPosition().y - object->getSprite()->getOrigin().y + object->getSprite()->getLocalBounds().height / 2);
 
@@ -173,7 +172,6 @@ void Entity::loseHP(){
 }
 
 void Entity::animate(float delta){
-	std::cout << "Entity Animation " << std::endl;
 }
 
 Entity::~Entity(){}
