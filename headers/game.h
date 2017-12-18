@@ -15,42 +15,53 @@ public:
 	~Game();
 
 	int Run(sf::RenderWindow &window, float delta);
+
 	void setBackground();
 	void createPlatformVector();
 	void updateView();
 	void updateBackground();
-	Platform * createPlatform(int num);
-	Snake createSnake();
-	void createSnakeVector();
-	void createFireball();
+	
+	
 	void assignNeighbors();
 	void verifyPlatforms();
 
+	Platform * createPlatform(int num);
+
+	Snake createSnake();
+	void createSnakeVector();
+
+	void createFireball();
+
 private:
-	//sf::Font font;
-	//sf::Text score;
+	int timer;
+	float windowHeight;
+	float windowWidth;
+
+	sf::View view;
+	
+	sf::Texture * masterTexture;
+	sf::Sprite ground;
+	sf::Sprite platform;
+	sf::Sprite background;
+
 	float maxHeight;
 	int fireballTimer;
 	bool backgroundChanged;
-	float windowHeight;
-	float windowWidth;
-	sf::View view;
-	int selectedItem;
+	
 	sf::Font font;
 	std::vector<sf::Text*> items;
-	sf::Sprite background;
+
 	//music is declared as a pointer as a workaround to not being able to use classes
 	//that inherit sf::nonCopyable
 	sf::Music * music;
 	sf::SoundBuffer buffer;
 	sf::Sound sound;
-	std::vector<Platform*> platforms;
-	std::vector<Snake*> snakes;
-	std::vector<Fireball*> fireballs;
+
 	Hero player;
-	sf::Texture * masterTexture;
-	directedGraph<int> platformGraph;
-	sf::Sprite ground;
-	sf::Sprite platform;
+	std::vector<Platform*> platforms;
+	std::vector<Entity*> snakes;
+	std::vector<Fireball*> fireballs;
 	Snake snake;
+
+	directedGraph<int> platformGraph;
 };

@@ -23,7 +23,7 @@ namespace Constants
   const int NUM_SNAKES = 80;
   const float SNAKE_SCALE = 3.0f;
   const float SNAKE_SPEED = 0.2f;
-  const float COLLISION_BUFFER = 25.0f; //disance between center of snake and sprite to signify collision
+  const float SNAKE_COLLISION_BUFFER = 25.0f; //disance between center of snake and sprite to signify collision
 
   const int FIREBALL_DIST_MOD = 250;
   const int NUM_FIREBALLS = 100;

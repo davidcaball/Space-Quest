@@ -85,7 +85,9 @@ int Menu::Run(sf::RenderWindow &window, float delta){
 			items[1]->setColor(sf::Color::White);
 			items[2]->setColor(sf::Color::White);
 			items[selectedItem]->setColor(sf::Color::Red);
-			if(e.type == sf::Event::JoystickMoved){
+
+			//Check for joystick directional pad movement
+			if(e.type == sf::Event::JoystickMoved || e.type == sf::Event::KeyPressed){
 				if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 0){
 					selectedItem++;
 					sound.play();
@@ -94,10 +96,9 @@ int Menu::Run(sf::RenderWindow &window, float delta){
 					selectedItem--;
 					sound.play();
 				}
-				if(selectedItem < 0) selectedItem = 2;
-				selectedItem = selectedItem % 3;
-				std::cout << selectedItem << std::endl;
 			}
+
+			//check for button press on joypad
 			if(e.type == sf::Event::JoystickButtonPressed){
 				if(e.joystickButton.button == 0){	
 					if(selectedItem == 0){
@@ -108,6 +109,32 @@ int Menu::Run(sf::RenderWindow &window, float delta){
 					if(selectedItem == 2) return -3; 
 				}
 			}
+
+			//check for keyboard button press
+			if(e.type == sf::Event::KeyPressed){
+				if(e.key.code == sf::Keyboard::Down){
+					selectedItem++;
+					sound.play();
+				}
+				else if(e.key.code == sf::Keyboard::Up){
+					selectedItem--;
+					sound.play();
+				}
+				else if(e.key.code == sf::Keyboard::Return){
+					if(selectedItem == 0){
+						//music->stop();
+						return 1;
+					}
+					if(selectedItem == 1) return 2;
+					if(selectedItem == 2) return -3; 
+				}
+			}
+
+			//handle menu selection overflow
+			if(selectedItem < 0) selectedItem = 2;
+
+			selectedItem = selectedItem % 3;
+			std::cout << selectedItem << std::endl;
 	}
 
 	//render objects and draw window

@@ -12,7 +12,7 @@ public:
 
 	void update(float delta);
 	void attack();
-	void setVelocity(sf::Vector2f velocityArg);
+	void setVelocity(float x, float y);
 	void jump();
 	bool checkPlatformCollision(sf::Sprite object);
 	int checkPlatformVectorCollision(std::vector<Platform*>);

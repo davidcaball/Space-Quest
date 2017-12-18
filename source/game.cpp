@@ -1,6 +1,6 @@
 #include "../headers/game.h"
-#include <iostream>
 #include "../headers/constants.h"
+#include <iostream>
 #include <time.h>
 #include <cmath>
 #include <string> 
@@ -42,17 +42,15 @@ Game::Game(float width, float height, sf::Texture &masterTex){
 
 	//initialize players sprite 
 	player = Hero(*masterTexture);
-	player.sprite.setTexture(*masterTexture);
-	player.sprite.setTextureRect(sf::IntRect(1, 62, 18, 23));
-	player.sprite.setScale(sf::Vector2f(Constants::SPRITE_SCALE, Constants::SPRITE_SCALE));
+	player.getSprite()->setTexture(*masterTexture);
+	player.getSprite()->setTextureRect(sf::IntRect(1, 62, 18, 23));
+	player.getSprite()->setScale(sf::Vector2f(Constants::SPRITE_SCALE, Constants::SPRITE_SCALE));
 
-	sf::FloatRect playerRect = player.sprite.getLocalBounds();
-	player.sprite.setOrigin(playerRect.left + playerRect.width / 2, 
+	sf::FloatRect playerRect = player.getSprite()->getLocalBounds();
+	player.getSprite()->setOrigin(playerRect.left + playerRect.width / 2, 
 		playerRect.top + playerRect.height);
-	player.sprite.setPosition(width / 2, ground.getPosition().y);
+	player.getSprite()->setPosition(width / 2, ground.getPosition().y);
 	player.setMoveSpeed(Constants::PLAYER_MOVE_SPEED);
-	player.setVelocity(sf::Vector2f(0,0));
-	player.setAcceleration(Constants::PLAYER_ACCELERATION);
 	//max jump = 896
 	//max distance = 685;
 
@@ -68,48 +66,41 @@ void Game::setBackground(){
 }
 
 int Game::Run(sf::RenderWindow &window, float delta){
-
 	sf::Event e;
 	
 	if(player.hitPoints <= 0){
-		player.sprite.setPosition(windowWidth / 2, ground.getPosition().y);
+		player.getSprite()->setPosition(windowWidth / 2, ground.getPosition().y);
 		player.hitPoints = 10;
 		background.setTextureRect(sf::IntRect(0, 1335, 1600, 1200));
 		background.setColor(sf::Color::White);
 
 	}
-	if(player.sprite.getPosition().x > maxHeight){
-		maxHeight = player.sprite.getPosition().x;
+	if(player.getSprite()->getPosition().x > maxHeight){
+		maxHeight = player.getSprite()->getPosition().x;
 		std::cout << "Max: " << maxHeight << std::endl;
 	}
 
 	while(window.pollEvent(e)){ //step through all events
-		if(e.type == sf::Event::JoystickButtonPressed){
+
+		if(e.type == sf::Event::JoystickButtonPressed || e.type == sf::Event::KeyPressed){
 			if(e.joystickButton.button == 7) return 0;
-			if(e.joystickButton.button == 2){
+			if(e.joystickButton.button == 2 || e.key.code == sf::Keyboard::Up){
 				std::cout << "Input: X" << std::endl;
  				player.jump();
 			}	
-			if(e.joystickButton.button == 4 && player.getAirDodge()){
+			if((e.joystickButton.button == 4 || e.key.code == sf::Keyboard::Space) && player.getAirDodge()){
 				std::cout << "Input: L" << std::endl;
 				player.airDodge();
 			}	
-			//TODO remove this
-			if(e.joystickButton.button == 6){
-				std::cout << player.sprite.getPosition().x << ","
-				<< player.sprite.getPosition().y << ", " << std::endl;
-			}	
-		}
-		if(e.type == sf::Event::JoystickMoved){
-		
 		}
 	}
 
-	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == 100){
-		player.setVelocity(sf::Vector2f(player.getVelocity().x + player.getAcceleration() * delta, player.getVelocity().y));
+	//set players acceleration left or right if player is holding left or right
+	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == 100 || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+		player.accelerate(delta, 1);
 	}
-	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == -100){
-		player.setVelocity(sf::Vector2f(player.getVelocity().x + player.getAcceleration() * delta * -1, player.getVelocity().y));
+	if(sf::Joystick::getAxisPosition(0, sf::Joystick::X) == -100 || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+		player.accelerate(delta, -1);
 	}
 
 
@@ -119,12 +110,12 @@ int Game::Run(sf::RenderWindow &window, float delta){
 		player.restoreJumps(); //jumps and air dodge ability restored upon landing
 		player.restoreAirDodge();
 		player.setAirDodge(false);
-		player.setVelocity(sf::Vector2f(player.getVelocity().x, 0));
-		player.sprite.setPosition(sf::Vector2f(player.sprite.getPosition().x, platforms[collided]->sprite.getPosition().y));
+		player.setVelocity(player.getVelocity().x, 0);
+		player.getSprite()->setPosition(sf::Vector2f(player.getSprite()->getPosition().x, platforms[collided]->sprite.getPosition().y));
 	}
 
 	//logic to check for collision with snakes
-	int snakeCollision = player.checkSnakeVectorCollision(snakes);
+	int snakeCollision = player.checkEntityVectorCollision(snakes, Constants::SNAKE_COLLISION_BUFFER);
 	if(snakeCollision >= 0 && !player.isInvincible()){
 		player.loseHP();
 	}
@@ -141,13 +132,13 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	if(fireballTimer < 0){
 		std::cout << "Trying to create fireball" << std::endl;
 		int chance = 2;
-		if(player.sprite.getPosition().y < -30000)
+		if(player.getSprite()->getPosition().y < -30000)
 			chance = 10;
-		else if(player.sprite.getPosition().y <-20000)
+		else if(player.getSprite()->getPosition().y <-20000)
 			chance = 7;
-		else if(player.sprite.getPosition().y <-10000)
+		else if(player.getSprite()->getPosition().y <-10000)
 			chance = 5;
-		else if(player.sprite.getPosition().y < -5000)
+		else if(player.getSprite()->getPosition().y < -5000)
 			chance = 2;
 		int randN = rand() % 10;
 		std::cout << randN << std::endl;
@@ -175,18 +166,18 @@ int Game::Run(sf::RenderWindow &window, float delta){
 	//draw all snakes
 	for(int i = 0; i < snakes.size(); i++){
 		snakes[i]->update(delta);
-		window.draw(snakes[i]->sprite);
+		window.draw(*(snakes[i]->getSprite()));
 	}
 
 	//render fireballs
 	for(int i = 0; i < fireballs.size(); i++){
 		fireballs[i]->update(delta);
-		window.draw(fireballs[i]->sprite);
+		window.draw(*(fireballs[i]->getSprite()));
 	}
 
 	
 
-	window.draw(player.sprite);
+	window.draw(*player.getSprite());
 	window.display();
 	return 1;
 }
@@ -261,20 +252,20 @@ void Game::createSnakeVector(){
 
 void Game::createFireball(){
 	float modifier = rand() % 250;
-	Fireball * newFireball = new Fireball(*masterTexture, 1640, player.sprite.getPosition().y - 500 - modifier);
+	Fireball * newFireball = new Fireball(*masterTexture, 1640, player.getSprite()->getPosition().y - 500 - modifier);
 	fireballs.push_back(newFireball);
 	std::cout << "Fireball Created" << std::endl;
 }
 
 void Game::updateView(){
-	float yPos = player.sprite.getPosition().y;
+	float yPos = player.getSprite()->getPosition().y;
 	if(yPos > windowHeight / 2) yPos = windowHeight / 2;
 	view.setCenter(sf::Vector2f(windowWidth / 2, yPos));
 }
 
 void Game::updateBackground(){
 	
-	float yPos = player.sprite.getPosition().y;
+	float yPos = player.getSprite()->getPosition().y;
 
 	//if player gets back to searth from space, change texture back to sky
 	if(backgroundChanged && yPos > -38000){

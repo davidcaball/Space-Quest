@@ -41,6 +41,7 @@ int main()
 
     //Create Render window
     sf::RenderWindow window(sf::VideoMode(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT), "Space Quest");
+    
 
     //Create Menu
     //TODO create single texture file

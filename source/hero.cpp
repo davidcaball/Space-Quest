@@ -13,10 +13,15 @@ Hero::Hero(sf::Texture &tex){
 	canAirDodge = false;
 	hitPoints = 10;
 	hit = false; //flag for seeing if hero has been hit
+	setVelocity(0.0f,0.0f);
+	setAcceleration(0,0);
+	baseAcceleration = Constants::PLAYER_ACCELERATION;
 }
 
-void Hero::setVelocity(sf::Vector2f velocityArg){
-	velocity = velocityArg;
+void Hero::setVelocity(float x, float y){
+	velocity.x = x;
+	velocity.y = y;
+
 	if(velocity.x > Constants::PLAYER_MAX_VELOCITY)
 		velocity.x = Constants::PLAYER_MAX_VELOCITY;
 	if(velocity.x < Constants::PLAYER_MAX_VELOCITY * -1)
@@ -27,8 +32,9 @@ void Hero::setVelocity(sf::Vector2f velocityArg){
 }
 
 void Hero::update(float delta){
-	//setVelocity(sf::Vector2f(velocity.x, velocity.y));
+
 	setOrientation();
+	setVelocity(velocity.x + acceleration.x * delta, velocity.y + acceleration.y * delta);
 	sprite.setPosition(sprite.getPosition().x + velocity.x * delta, sprite.getPosition().y + velocity.y * delta);
 
 	//check if player should be playing hit animation
@@ -61,17 +67,17 @@ void Hero::update(float delta){
 	//friction
 	float temp = getVelocity().x;
 	if(getVelocity().x != 0){
-		setVelocity(sf::Vector2f(getVelocity().x - Constants::FRICTION * delta * ((getVelocity().x > 0) ? 1 : -1), 
-							   	getVelocity().y));
+		setVelocity(getVelocity().x - Constants::FRICTION * delta * ((getVelocity().x > 0) ? 1 : -1), 
+							   	getVelocity().y);
 		//comparison is used to test whether there was a switch in velocity from pos to neg
 		//if there is just set velocity to 0 to revent jittering
-		if(temp * getVelocity().x < 0) setVelocity(sf::Vector2f(0, getVelocity().y));
+		if(temp * getVelocity().x < 0) setVelocity(0, getVelocity().y);
 	}
 
 	//checks if sprite is below the ground level, corrects if it is.
 	//if it is above ground gravity acts on it
 	if(sprite.getPosition().y < Constants::WINDOW_HEIGHT - 40){
-		setVelocity(sf::Vector2f(velocity.x, velocity.y + Constants::GRAVITY * delta));
+		setVelocity(velocity.x, velocity.y + Constants::GRAVITY * delta);
 	}else{
 			velocity.y = 0;
 			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));
@@ -163,11 +169,11 @@ bool Hero::checkSnakeCollision(Snake object){
 	sf::Vector2f spriteCenter(sprite.getPosition().x - sprite.getOrigin().x + sprite.getLocalBounds().width / 2,
 		sprite.getPosition().y - sprite.getOrigin().y + sprite.getLocalBounds().height / 2);
 
-	sf::Vector2f objectCenter(object.sprite.getPosition().x - object.sprite.getOrigin().x + object.sprite.getLocalBounds().width / 2,
-		object.sprite.getPosition().y - object.sprite.getOrigin().y + object.sprite.getLocalBounds().height / 2);
+	sf::Vector2f objectCenter(object.getSprite()->getPosition().x - object.getSprite()->getOrigin().x + object.getSprite()->getLocalBounds().width / 2,
+		object.getSprite()->getPosition().y - object.getSprite()->getOrigin().y + object.getSprite()->getLocalBounds().height / 2);
 
 	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((spriteCenter.y - objectCenter.y), 2));
-	if(distance < Constants::COLLISION_BUFFER){
+	if(distance < Constants::SNAKE_COLLISION_BUFFER){
 		return true;
 	}
 	return false;
@@ -187,8 +193,8 @@ bool Hero::checkFireballCollision(Fireball object){
 	sf::Vector2f spriteCenter(sprite.getPosition().x - sprite.getOrigin().x + sprite.getLocalBounds().width / 2,
 		sprite.getPosition().y - sprite.getOrigin().y + sprite.getLocalBounds().height / 2);
 
-	sf::Vector2f objectCenter(object.sprite.getPosition().x - object.sprite.getOrigin().x + object.sprite.getLocalBounds().width / 2,
-		object.sprite.getPosition().y - object.sprite.getOrigin().y + object.sprite.getLocalBounds().height / 2);
+	sf::Vector2f objectCenter(object.getSprite()->getPosition().x - object.getSprite()->getOrigin().x + object.getSprite()->getLocalBounds().width / 2,
+		object.getSprite()->getPosition().y - object.getSprite()->getOrigin().y + object.getSprite()->getLocalBounds().height / 2);
 
 	float distance = sqrt(pow((spriteCenter.x - objectCenter.x), 2) + pow((spriteCenter.y - objectCenter.y), 2));
 	if(distance < Constants::FIREBALL_COLLISION_BUFFER){
