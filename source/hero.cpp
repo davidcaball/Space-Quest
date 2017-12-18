@@ -5,7 +5,7 @@
 
 Hero::Hero(sf::Texture &tex){
 	setTexture(tex);
-	sf::Sprite sprite;
+	sprite = new sf::Sprite();
 	jumps = Constants::NUM_JUMPS;
 	airDodgeTimer = Constants::AIR_DODGE_TIME;
 	hitTimer = Constants::HIT_ANIM_TIME;
@@ -35,14 +35,14 @@ void Hero::update(float delta){
 
 	setOrientation();
 	setVelocity(velocity.x + acceleration.x * delta, velocity.y + acceleration.y * delta);
-	sprite.setPosition(sprite.getPosition().x + velocity.x * delta, sprite.getPosition().y + velocity.y * delta);
+	sprite->setPosition(sprite->getPosition().x + velocity.x * delta, sprite->getPosition().y + velocity.y * delta);
 
 	//check if player should be playing hit animation
 	if(hit){
 		hitTimer -= delta;
 		if(hitTimer % 200 > 100)
-			sprite.setColor(sf::Color::Red);
-		else sprite.setColor(sf::Color::White);
+			sprite->setColor(sf::Color::Red);
+		else sprite->setColor(sf::Color::White);
 		if(hitTimer <= 0){
 			hitTimer = Constants::HIT_ANIM_TIME;
 			hit = false;
@@ -59,7 +59,7 @@ void Hero::update(float delta){
 		if(airDodgeTimer <= 0){
 			airDodging = false;
 			invincible = false;
-			sprite.setTextureRect(sf::IntRect(1, 62, 18, 23));
+			sprite->setTextureRect(sf::IntRect(1, 62, 18, 23));
 		}
 		return;
 	}
@@ -76,11 +76,11 @@ void Hero::update(float delta){
 
 	//checks if sprite is below the ground level, corrects if it is.
 	//if it is above ground gravity acts on it
-	if(sprite.getPosition().y < Constants::WINDOW_HEIGHT - 40){
+	if(sprite->getPosition().y < Constants::WINDOW_HEIGHT - 40){
 		setVelocity(velocity.x, velocity.y + Constants::GRAVITY * delta);
 	}else{
 			velocity.y = 0;
-			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));
+			sprite->setPosition(sf::Vector2f(sprite->getPosition().x, Constants::WINDOW_HEIGHT - 40));
 			restoreJumps();
 			restoreAirDodge();
 			setAirDodge(false);
@@ -98,10 +98,10 @@ void Hero::jump(){
 
 bool Hero::checkPlatformCollision(sf::Sprite object){
 	//checking bounds of both object to see if they intersect
-	if(object.getPosition().y < sprite.getPosition().y 
-		&& object.getPosition().y + object.getLocalBounds().height > sprite.getPosition().y
-		&& object.getPosition().x < sprite.getPosition().x
-		&& object.getPosition().x + object.getLocalBounds().width * Constants::PLATFORM_W_SCALE + sprite.getLocalBounds().width * 1 > sprite.getPosition().x){
+	if(object.getPosition().y < sprite->getPosition().y 
+		&& object.getPosition().y + object.getLocalBounds().height > sprite->getPosition().y
+		&& object.getPosition().x < sprite->getPosition().x
+		&& object.getPosition().x + object.getLocalBounds().width * Constants::PLATFORM_W_SCALE + sprite->getLocalBounds().width * 1 > sprite->getPosition().x){
 		return true;
 	}
 }
@@ -115,7 +115,7 @@ int Hero::checkPlatformVectorCollision(std::vector<Platform*> platforms){
 }
 
 void Hero::restoreJumps(){
-	sprite.setTextureRect(sf::IntRect(1, 62, 18, 23));
+	sprite->setTextureRect(sf::IntRect(1, 62, 18, 23));
 	jumps = Constants::NUM_JUMPS;
 }
 
@@ -137,7 +137,7 @@ void Hero::airDodge(){
 		if(sf::Joystick::getAxisPosition(0, sf::Joystick::Y) == -100){
 			velocity.y = -Constants::AIR_DODGE_SPEED;
 		}
-		sprite.setTextureRect(sf::IntRect(578, 60, 17, 24));
+		sprite->setTextureRect(sf::IntRect(578, 60, 17, 24));
 	}
 }
 
@@ -150,13 +150,13 @@ bool Hero::getAirDodge(){
 }
 
 void Hero::setJumpSprite(){
-	sprite.setTextureRect(sf::IntRect(353, 62, 18, 23));
+	sprite->setTextureRect(sf::IntRect(353, 62, 18, 23));
 }
 
 void Hero::setOrientation(){
 	float scale = Constants::SPRITE_SCALE;
-	if(velocity.x > 0) sprite.setScale(scale, scale);
-	else if(velocity.x < 0) sprite.setScale(-scale, scale);
+	if(velocity.x > 0) sprite->setScale(scale, scale);
+	else if(velocity.x < 0) sprite->setScale(-scale, scale);
 }
 
 void Hero::restoreAirDodge(){
@@ -166,8 +166,8 @@ void Hero::restoreAirDodge(){
 
 //checks collision between two entities
 bool Hero::checkSnakeCollision(Snake object){
-	sf::Vector2f spriteCenter(sprite.getPosition().x - sprite.getOrigin().x + sprite.getLocalBounds().width / 2,
-		sprite.getPosition().y - sprite.getOrigin().y + sprite.getLocalBounds().height / 2);
+	sf::Vector2f spriteCenter(sprite->getPosition().x - sprite->getOrigin().x + sprite->getLocalBounds().width / 2,
+		sprite->getPosition().y - sprite->getOrigin().y + sprite->getLocalBounds().height / 2);
 
 	sf::Vector2f objectCenter(object.getSprite()->getPosition().x - object.getSprite()->getOrigin().x + object.getSprite()->getLocalBounds().width / 2,
 		object.getSprite()->getPosition().y - object.getSprite()->getOrigin().y + object.getSprite()->getLocalBounds().height / 2);
@@ -190,8 +190,8 @@ int Hero::checkSnakeVectorCollision(std::vector<Snake*> objectList){
 }
 
 bool Hero::checkFireballCollision(Fireball object){
-	sf::Vector2f spriteCenter(sprite.getPosition().x - sprite.getOrigin().x + sprite.getLocalBounds().width / 2,
-		sprite.getPosition().y - sprite.getOrigin().y + sprite.getLocalBounds().height / 2);
+	sf::Vector2f spriteCenter(sprite->getPosition().x - sprite->getOrigin().x + sprite->getLocalBounds().width / 2,
+		sprite->getPosition().y - sprite->getOrigin().y + sprite->getLocalBounds().height / 2);
 
 	sf::Vector2f objectCenter(object.getSprite()->getPosition().x - object.getSprite()->getOrigin().x + object.getSprite()->getLocalBounds().width / 2,
 		object.getSprite()->getPosition().y - object.getSprite()->getOrigin().y + object.getSprite()->getLocalBounds().height / 2);

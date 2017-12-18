@@ -58,7 +58,7 @@ float Entity::getMoveSpeed(){
 }
 
 sf::Sprite * Entity::getSprite(){
-	return &sprite;
+	return sprite;
 }
 
 
@@ -70,7 +70,7 @@ sf::Sprite * Entity::getSprite(){
 //****************** Movement Methods ******************
 
 void Entity::move(float x, float y){
-	sprite.setPosition(sprite.getPosition().x + x, sprite.getPosition().y + y);
+	sprite->setPosition(sprite->getPosition().x + x, sprite->getPosition().y + y);
 }
 
 
@@ -97,7 +97,7 @@ void Entity::accelerate(float delta, int direction){
 
 void Entity::update(float delta){
 	setVelocity(velocity.x + acceleration.x * delta, velocity.y + acceleration.y * delta);
-	sprite.setPosition(sprite.getPosition().x + velocity.x * delta, sprite.getPosition().y + velocity.y * delta);
+	sprite->setPosition(sprite->getPosition().x + velocity.x * delta, sprite->getPosition().y + velocity.y * delta);
 
 	//friction
 	float temp = getVelocity().x;
@@ -110,12 +110,12 @@ void Entity::update(float delta){
 
 	//checks if sprite is below the ground level, corrects if it is.
 	//if it is above ground gravity acts on it
-	if(sprite.getPosition().y < Constants::WINDOW_HEIGHT - 40){
+	if(sprite->getPosition().y < Constants::WINDOW_HEIGHT - 40){
 		setAcceleration(velocity.x, Constants::GRAVITY);
 	}else{
 			acceleration.y = 0;
 			velocity.y = 0;
-			sprite.setPosition(sf::Vector2f(sprite.getPosition().x, Constants::WINDOW_HEIGHT - 40));
+			sprite->setPosition(sf::Vector2f(sprite->getPosition().x, Constants::WINDOW_HEIGHT - 40));
 	}
 
 }
@@ -126,10 +126,10 @@ void Entity::update(float delta){
 //checks collision with a single platform and returns true if they collide
 bool Entity::checkPlatformCollision(sf::Sprite object){
 	//checking bounds of both object to see if they intersect
-	if(object.getPosition().y < sprite.getPosition().y 
-		&& object.getPosition().y + object.getLocalBounds().height > sprite.getPosition().y
-		&& object.getPosition().x < sprite.getPosition().x
-		&& object.getPosition().x + object.getLocalBounds().width + sprite.getLocalBounds().width * 2 > sprite.getPosition().x)
+	if(object.getPosition().y < sprite->getPosition().y 
+		&& object.getPosition().y + object.getLocalBounds().height > sprite->getPosition().y
+		&& object.getPosition().x < sprite->getPosition().x
+		&& object.getPosition().x + object.getLocalBounds().width + sprite->getLocalBounds().width * 2 > sprite->getPosition().x)
 		return true;
 
 }
@@ -145,9 +145,9 @@ int Entity::checkPlatformVectorCollision(std::vector<Platform*> platforms){
 
 //checks collision between two entities
 bool Entity::checkEntityCollision(Entity * object, float collisionBuffer){
-	sf::Vector2f spriteCenter(sprite.getPosition().x - sprite.getOrigin().x + sprite.getLocalBounds().width / 2,
-		sprite.getPosition().y - sprite.getOrigin().y + sprite.getLocalBounds().height / 2);
-	std::cout << "Sprite loaction " << sprite.getPosition().x << ", " << sprite.getPosition().y << "Snake Location: " << object->getSprite()->getPosition().x << ", " << object->getSprite()->getPosition().y  << std::endl;
+	sf::Vector2f spriteCenter(sprite->getPosition().x - sprite->getOrigin().x + sprite->getLocalBounds().width / 2,
+		sprite->getPosition().y - sprite->getOrigin().y + sprite->getLocalBounds().height / 2);
+	std::cout << "Sprite loaction " << sprite->getPosition().x << ", " << sprite->getPosition().y << "Snake Location: " << object->getSprite()->getPosition().x << ", " << object->getSprite()->getPosition().y  << std::endl;
 	sf::Vector2f objectCenter(object->getSprite()->getPosition().x - object->getSprite()->getOrigin().x + object->getSprite()->getLocalBounds().width / 2,
 		object->getSprite()->getPosition().y - object->getSprite()->getOrigin().y + object->getSprite()->getLocalBounds().height / 2);
 

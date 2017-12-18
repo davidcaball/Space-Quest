@@ -43,7 +43,7 @@ public:
 
 protected:
 
-	sf::Sprite sprite;
+	sf::Sprite * sprite;
 	float baseAcceleration;
 	float moveSpeed;
 	sf::Vector2f acceleration;
